@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💣 DINGER LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0c0f;
+    --surface:  #111318;
+    --card:     #161a22;
+    --border:   #1e2430;
+    --teal:     #00d4b8;
+    --amber:    #f5a623;
+    --gold:     #ffd700;
+    --red:      #ff4466;
+    --green:    #39d98a;
+    --blue:     #4da6ff;
+    --purple:   #a78bfa;
+    --text:     #e8eaf0;
+    --muted:    #6b7280;
+    --dim:      #374151;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─────────────────────────────────── */
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #161a22 100%);
+    border-bottom: 2px solid var(--teal);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 32px rgba(0,212,184,0.08);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+  }
+
+  .logo span {
+    font-size: 22px;
+  }
+
+  nav {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  nav button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  nav button:hover { color: var(--text); background: var(--border); }
+
+  nav button.active {
+    background: rgba(0,212,184,0.12);
+    color: var(--teal);
+    border: 1px solid rgba(0,212,184,0.3);
+  }
+
+  .import-btn {
+    margin-left: auto;
+    background: linear-gradient(135deg, var(--teal), #00a896) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    padding: 8px 20px !important;
+    font-size: 11px !important;
+  }
+
+  .import-btn:hover { opacity: 0.9; }
+
+  /* ─── MAIN ───────────────────────────────────── */
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 20px;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ─── SECTION HEADER ─────────────────────────── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--teal);
+  }
+
+  .section-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* ─── IMPORT TAB ─────────────────────────────── */
+  .import-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .upload-zone {
+    background: var(--card);
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--teal);
+    background: rgba(0,212,184,0.04);
+  }
+
+  .upload-zone.loaded {
+    border-color: var(--green);
+    border-style: solid;
+    background: rgba(57,217,138,0.04);
+  }
+
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+
+  .upload-icon { font-size: 36px; margin-bottom: 12px; }
+
+  .upload-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .upload-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .upload-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  .status-waiting { background: rgba(107,114,128,0.2); color: var(--muted); }
+  .status-loaded { background: rgba(57,217,138,0.15); color: var(--green); }
+
+  .import-cols {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 12px;
+    text-align: left;
+    line-height: 1.7;
+  }
+
+  .import-cols span { color: var(--amber); }
+
+  .run-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--teal), #00a896);
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 28px;
+  }
+
+  .run-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(0,212,184,0.3); }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ─── FACTOR INFO ────────────────────────────── */
+  .factor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .factor-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    border-left: 3px solid;
+  }
+
+  .factor-card:nth-child(1) { border-left-color: var(--teal); }
+  .factor-card:nth-child(2) { border-left-color: var(--amber); }
+  .factor-card:nth-child(3) { border-left-color: var(--red); }
+  .factor-card:nth-child(4) { border-left-color: var(--blue); }
+  .factor-card:nth-child(5) { border-left-color: var(--purple); }
+  .factor-card:nth-child(6) { border-left-color: var(--green); }
+  .factor-card:nth-child(7) { border-left-color: var(--gold); }
+  .factor-card:nth-child(8) { border-left-color: #ff8c42; }
+
+  .factor-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .factor-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .factor-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .factor-weight {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(0,212,184,0.1);
+    color: var(--teal);
+  }
+
+  /* ─── LEADERBOARD TAB ────────────────────────── */
+  .controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-group { display: flex; gap: 6px; }
+
+  .filter-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+
+  .filter-btn.active {
+    background: rgba(245,166,35,0.12);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+
+  .sort-select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  .search-input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    width: 180px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-input:focus { border-color: var(--teal); }
+  .search-input::placeholder { color: var(--muted); }
+
+  /* ─── HR CARD ────────────────────────────────── */
+  .board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  .hr-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hr-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--amber));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .hr-card:hover { transform: translateY(-2px); border-color: var(--dim); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .hr-card:hover::before { opacity: 1; }
+
+  .hr-card.elite { border-color: rgba(255,215,0,0.25); background: linear-gradient(135deg, #161a22 0%, #1a1810 100%); }
+  .hr-card.elite::before { opacity: 1; background: linear-gradient(90deg, var(--gold), var(--amber)); }
+  .hr-card.prime { border-color: rgba(0,212,184,0.2); }
+  .hr-card.prime::before { opacity: 1; }
+
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+
+  .player-info { flex: 1; }
+
+  .player-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .player-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .player-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .tier-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-left: 12px;
+    white-space: nowrap;
+  }
+
+  .tier-ELITE { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid rgba(255,215,0,0.3); }
+  .tier-PRIME { background: rgba(0,212,184,0.12); color: var(--teal); border: 1px solid rgba(0,212,184,0.25); }
+  .tier-SOLID { background: rgba(77,166,255,0.12); color: var(--blue); border: 1px solid rgba(77,166,255,0.25); }
+  .tier-WATCH { background: rgba(107,114,128,0.2); color: var(--muted); border: 1px solid var(--border); }
+
+  /* composite score ring */
+  .score-ring {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(var(--teal) 0% 0%, var(--border) 0% 100%);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .score-ring-inner {
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .score-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* factor bars */
+  .factor-bars { margin: 14px 0; display: flex; flex-direction: column; gap: 6px; }
+
+  .factor-row { display: flex; align-items: center; gap: 10px; }
+
+  .factor-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    width: 84px;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .factor-bar-bg {
+    flex: 1;
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .factor-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .factor-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* stats strip */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 14px 0;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    display: block;
+  }
+
+  .stat-val.hot { color: var(--amber); }
+  .stat-val.elite { color: var(--teal); }
+  .stat-val.danger { color: var(--red); }
+
+  .stat-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* card footer */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .matchup-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .matchup-info strong { color: var(--text); }
+
+  .odds-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    color: var(--amber);
+  }
+
+  /* platoon indicator */
+  .platoon-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+  }
+
+  .platoon-adv { background: rgba(57,217,138,0.12); color: var(--green); border: 1px solid rgba(57,217,138,0.2); }
+  .platoon-dis { background: rgba(255,68,102,0.1); color: var(--red); border: 1px solid rgba(255,68,102,0.2); }
+  .platoon-neu { background: rgba(107,114,128,0.15); color: var(--muted); border: 1px solid var(--border); }
+
+  /* ─── DETAIL MODAL ───────────────────────────── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--border);
+    border: none;
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { background: var(--dim); color: var(--text); }
+
+  .modal-player-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+  }
+
+  .modal-player-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .modal-section { margin-bottom: 24px; }
+
+  .modal-section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--teal);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .modal-stat {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .modal-stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .modal-stat-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .analysis-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .factor-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .factor-detail-row:last-child { border-bottom: none; }
+
+  .factor-detail-icon { font-size: 18px; width: 24px; flex-shrink: 0; }
+
+  .factor-detail-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .factor-detail-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 500;
+    width: 40px;
+    text-align: right;
+  }
+
+  .factor-detail-bar-bg {
+    width: 80px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .factor-detail-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--amber));
+  }
+
+  /* ─── PITCHER TAB ────────────────────────────── */
+  .pitcher-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .pitcher-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .pitcher-table th:hover { color: var(--teal); }
+  .pitcher-table th.sorted { color: var(--amber); }
+
+  .pitcher-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(30,36,48,0.6);
+    vertical-align: middle;
+  }
+
+  .pitcher-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .pitcher-name { color: var(--text); font-size: 13px; }
+  .pitcher-hand { color: var(--muted); font-size: 10px; display: block; }
+
+  .val-hot { color: var(--red) !important; }
+  .val-warm { color: var(--amber) !important; }
+  .val-cool { color: var(--green) !important; }
+  .val-neutral { color: var(--text); }
+
+  .target-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .target-high { background: rgba(255,68,102,0.15); color: var(--red); border: 1px solid rgba(255,68,102,0.3); }
+  .target-med { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
+  .target-low { background: rgba(107,114,128,0.15); color: var(--muted); border: 1px solid var(--border); }
+
+  /* ─── PARK TAB ───────────────────────────────── */
+  .park-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .park-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: all 0.2s;
+  }
+
+  .park-card:hover { border-color: var(--dim); transform: translateY(-1px); }
+
+  .park-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .park-team {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .park-factor-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .park-factor-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .park-factor-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .park-bar-bg {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .park-bar-fill { height: 100%; border-radius: 2px; }
+
+  .park-trend {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    margin-top: 8px;
+    color: var(--muted);
+  }
+
+  /* ─── ANALYSIS BOX SHARED ────────────────────── */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .insight-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+
+  .insight-text {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .insight-text strong { color: var(--text); }
+
+  /* ─── EMPTY / NO DATA ────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
+
+  .empty-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+
+  .empty-sub { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.5px; }
+
+  /* ─── TOAST ──────────────────────────────────── */
+  #toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--teal);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--teal);
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ─────────────────────────────── */
+  @media (max-width: 768px) {
+    .import-grid { grid-template-columns: 1fr; }
+    .board { grid-template-columns: 1fr; }
+    .modal-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    header { gap: 12px; padding: 0 14px; }
+    .logo { font-size: 22px; }
+    main { padding: 16px 12px; }
+  }
+
+  /* ─── SCROLLBAR ──────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+
+  /* ─── PULSE ANIMATION ────────────────────────── */
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .pulse { animation: pulse 2s infinite; }
+
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .hr-card { animation: fadeIn 0.3s ease backwards; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">💣 <span>DINGER LAB</span></div>
+  <nav id="nav">
+    <button class="active" data-tab="import">⬆ Import Data</button>
+    <button data-tab="board">🎯 HR Board</button>
+    <button data-tab="pitchers">⚾ Pitcher Targets</button>
+    <button data-tab="parks">🏟️ Park Factors</button>
+  </nav>
+  <button class="filter-btn import-btn" onclick="switchTab('import')">LOAD CSV</button>
+</header>
+
+<main>
+
+<!-- ══════════════ IMPORT TAB ══════════════ -->
+<div class="tab-content active" id="tab-import">
+  <div class="section-header">
+    <div class="section-title">LOAD PROPFINDER DATA</div>
+    <div class="section-sub">Upload 3 CSVs · Auto-parsed · Powers the full model</div>
+  </div>
+
+  <div class="import-grid">
+    <div class="upload-zone" id="zone-0">
+      <input type="file" accept=".csv" onchange="handleFile(event, 0)">
+      <div class="upload-icon">🏏</div>
+      <div class="upload-label">Batter Data</div>
+      <div class="upload-hint">Upload first · Core Statcast metrics</div>
+      <div class="upload-status status-waiting" id="status-0">⏳ Waiting</div>
+      <div class="import-cols">
+        Priority columns:<br>
+        <span>Batter name, handedness</span><br>
+        <span>Exit velocity, launch angle</span><br>
+        <span>Barrel%, bat speed</span><br>
+        <span>Pull Air%, HR/FB, distance</span><br>
+        <span>Sweet spot%, hard hit%</span>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="zone-1">
+      <input type="file" accept=".csv" onchange="handleFile(event, 1)">
+      <div class="upload-icon">🆘</div>
+      <div class="upload-label">Pitchers vs LHB</div>
+      <div class="upload-hint">Upload second · Left-handed batters</div>
+      <div class="upload-status status-waiting" id="status-1">⏳ Waiting</div>
+      <div class="import-cols">
+        Priority columns:<br>
+        <span>Pitcher name, IP</span><br>
+        <span>HR, HR/9 vs LHB</span><br>
+        <span>Hard hit%, barrel%</span><br>
+        <span>Fly ball% allowed</span>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="zone-2">
+      <input type="file" accept=".csv" onchange="handleFile(event, 2)">
+      <div class="upload-icon">🆚</div>
+      <div class="upload-label">Pitchers vs RHB</div>
+      <div class="upload-hint">Upload third · Right-handed batters</div>
+      <div class="upload-status status-waiting" id="status-2">⏳ Waiting</div>
+      <div class="import-cols">
+        Priority columns:<br>
+        <span>Pitcher name, IP</span><br>
+        <span>HR, HR/9 vs RHB</span><br>
+        <span>Hard hit%, barrel%</span><br>
+        <span>Fly ball% allowed</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="run-btn" id="run-btn" disabled onclick="runModel()">
+    🔬 RUN HR PREDICTION MODEL
+  </button>
+
+  <!-- Factor breakdown -->
+  <div class="section-header">
+    <div class="section-title">8-FACTOR MODEL</div>
+    <div class="section-sub">Research-backed composite scoring</div>
+  </div>
+
+  <div class="factor-grid">
+    <div class="factor-card">
+      <div class="factor-name">Factor 1 — Primary Power</div>
+      <div class="factor-title">Exit Velocity + Barrel%</div>
+      <div class="factor-desc">Barrel% is the single strongest Statcast predictor of future HRs. ~85% of all HRs are barrels. EV 95+ mph is required threshold. Elite: EV 112+ / Barrel 15%+.</div>
+      <span class="factor-weight">Weight: 22%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 2 — Elevation</div>
+      <div class="factor-title">Launch Angle + Sweet Spot%</div>
+      <div class="factor-desc">Optimal HR launch angle is 25–35°. Sweet Spot% (8-32° range) measures consistency. Pull Air% reveals pull-field power generation — most HRs are pulled.</div>
+      <span class="factor-weight">Weight: 18%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 3 — Bat Speed</div>
+      <div class="factor-title">Bat Speed + Fast Swing%</div>
+      <div class="factor-desc">Bat speed directly drives exit velocity. Every mph of bat speed adds ~1.2 mph of EV. Elite bat speed (75+ mph avg) with high hard-hit% = premium dinger profile.</div>
+      <span class="factor-weight">Weight: 12%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 4 — Pitcher Vulnerability</div>
+      <div class="factor-title">HR/9 + Barrel% Allowed</div>
+      <div class="factor-desc">Pitchers above 1.4 HR/9 are high-leverage targets. Barrel% allowed and hard-hit% give the true quality of contact surrendered — not just results.</div>
+      <span class="factor-weight">Weight: 20%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 5 — Platoon</div>
+      <div class="factor-title">Batter/Pitcher Handedness</div>
+      <div class="factor-desc">Handedness splits vs specific pitcher side (LHB vs RHP, RHB vs LHP are favored matchups). Pitcher's HR splits by batter hand are loaded directly from CSV files.</div>
+      <span class="factor-weight">Weight: 10%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 6 — Park Factor</div>
+      <div class="factor-title">HR Park Index (2025–26)</div>
+      <div class="factor-desc">UNIQLO Field (LAD) leads all parks at 135 HR factor. Coors, Camden, GABP are also strong. Oracle/PNC/Comerica suppress. Factor adjusts composite score ±15 pts.</div>
+      <span class="factor-weight">Weight: 10%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 7 — Hot Streak</div>
+      <div class="factor-title">Recent HR Rate + Distance</div>
+      <div class="factor-desc">Avg distance on fly balls indicates current power. HR/FB rate over recent games shows who's elevating well right now. Form matters — momentum is real.</div>
+      <span class="factor-weight">Weight: 5%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 8 — HR/FB Ratio</div>
+      <div class="factor-title">Power Conversion Rate</div>
+      <div class="factor-desc">% of fly balls that leave the yard. League avg ~12%. 18%+ = legitimate power. Below 10% without supporting metrics suggests regression incoming — or a prime buy-low spot.</div>
+      <span class="factor-weight">Weight: 3%</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ BOARD TAB ══════════════ -->
+<div class="tab-content" id="tab-board">
+  <div class="section-header">
+    <div class="section-title">HR PREDICTION BOARD</div>
+    <div class="section-sub" id="board-subtitle">Load data to generate rankings</div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="filter-group">
+      <button class="filter-btn active" onclick="filterBoard('all', this)">ALL</button>
+      <button class="filter-btn" onclick="filterBoard('ELITE', this)">⭐ ELITE</button>
+      <button class="filter-btn" onclick="filterBoard('PRIME', this)">🔥 PRIME</button>
+      <button class="filter-btn" onclick="filterBoard('SOLID', this)">✓ SOLID</button>
+    </div>
+    <input type="text" class="search-input" placeholder="Search player..." oninput="searchBoard(this.value)">
+    <select class="sort-select" onchange="sortBoard(this.value)">
+      <option value="score">Sort: Composite Score</option>
+      <option value="ev">Sort: Exit Velocity</option>
+      <option value="barrel">Sort: Barrel%</option>
+      <option value="pitcher">Sort: Pitcher HR/9</option>
+      <option value="batspeed">Sort: Bat Speed</option>
+    </select>
+  </div>
+
+  <div class="board" id="board-grid">
+    <div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">💣</div>
+      <div class="empty-title">NO DATA LOADED</div>
+      <div class="empty-sub">Upload CSVs in the Import tab · Then hit RUN MODEL</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PITCHERS TAB ══════════════ -->
+<div class="tab-content" id="tab-pitchers">
+  <div class="section-header">
+    <div class="section-title">PITCHER TARGETS</div>
+    <div class="section-sub">Sorted by HR vulnerability · Batter handedness split included</div>
+  </div>
+
+  <div id="pitcher-content">
+    <div class="empty-state">
+      <div class="empty-icon">⚾</div>
+      <div class="empty-title">AWAITING PITCHER DATA</div>
+      <div class="empty-sub">Upload LHB + RHB pitcher CSVs · Then run model</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PARKS TAB ══════════════ -->
+<div class="tab-content" id="tab-parks">
+  <div class="section-header">
+    <div class="section-title">PARK FACTORS</div>
+    <div class="section-sub">2025–26 HR index · 100 = league average · Source: Baseball Savant</div>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="insight-title">🏆 BEST FOR HR BETS</div>
+      <div class="insight-text">
+        <strong>UNIQLO Field (LAD)</strong> — 135 factor, #1 in baseball. Dry heat + minimal wind + elite lineup.<br><br>
+        <strong>Coors Field (COL)</strong> — Altitude supercharges ball carry. Legit cheat code.<br><br>
+        <strong>Camden Yards (BAL)</strong> — Jumped to #2 after fence changes (121 factor). Huge for RHB power.
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">⚠️ AVOID / FADE</div>
+      <div class="insight-text">
+        <strong>Oracle Park (SF)</strong> — Marine layer + deep CF suppress HRs, especially for LHB.<br><br>
+        <strong>PNC Park (PIT)</strong> — Second lowest HR total across last 5 seasons.<br><br>
+        <strong>Petco Park (SD)</strong> — HR suppressor since construction. Cold marine air in April.
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">🔨 2026 RENOVATIONS</div>
+      <div class="insight-text">
+        <strong>Kauffman Stadium (KC)</strong> — Walls moved in significantly for 2026. Historical factor (83) is OBSOLETE — expect major HR jump.<br><br>
+        <strong>Camden Yards (BAL)</strong> — Left field fence adjustments now fully in effect. RHB pull hitters now thrive.
+      </div>
+    </div>
+  </div>
+
+  <div class="park-grid" id="park-grid">
+    <!-- rendered by JS -->
+  </div>
+</div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DINGER LAB — Core Logic
+// ═══════════════════════════════════════════════════════
+
+const PARK_FACTORS = {
+  'LAD': { name: 'UNIQLO Field',     team: 'Dodgers',    hr: 135, note: '#1 in MLB · Dry heat · No wind interference', roof: false },
+  'COL': { name: 'Coors Field',       team: 'Rockies',    hr: 130, note: 'Altitude-fueled carry · Always a cheat code', roof: false },
+  'BAL': { name: 'Camden Yards',      team: 'Orioles',    hr: 121, note: 'Fence changes boosted to #2 · RHB pull heaven', roof: false },
+  'NYY': { name: 'Yankee Stadium',    team: 'Yankees',    hr: 118, note: 'Short porch gifts LHB pull power', roof: false },
+  'CIN': { name: 'GABP',              team: 'Reds',       hr: 116, note: 'Historically elite for LHB (+42% vs league)', roof: false },
+  'TEX': { name: 'Globe Life Field',  team: 'Rangers',    hr: 113, note: 'Climate-controlled dome · Neutral conditions', roof: true },
+  'PHI': { name: "Citizens Bank Park",team: 'Phillies',   hr: 112, note: 'Wind and heat amplify fly balls', roof: false },
+  'ATL': { name: 'Truist Park',       team: 'Braves',     hr: 110, note: 'Summer heat boosts HR carry', roof: false },
+  'TOR': { name: "Rogers Centre",     team: 'Blue Jays',  hr: 108, note: 'Turf surface + short porch', roof: true },
+  'MIN': { name: 'Target Field',      team: 'Twins',      hr: 107, note: 'Neutral to slight hitter friendly', roof: false },
+  'HOU': { name: 'Daikin Park',       team: 'Astros',     hr: 105, note: 'Dome keeps HR neutral year-round', roof: true },
+  'BOS': { name: 'Fenway Park',       team: 'Red Sox',    hr: 103, note: 'Green Monster gifts doubles but suppresses HRs', roof: false },
+  'MIL': { name: 'American Family',  team: 'Brewers',     hr: 100, note: 'Neutral park · Retractable roof', roof: true },
+  'DET': { name: 'Comerica Park',     team: 'Tigers',     hr: 99,  note: 'Cold spring suppresses. Warmer months improving.', roof: false },
+  'CHC': { name: 'Wrigley Field',     team: 'Cubs',       hr: 97,  note: 'Wind-dependent · Can swing ±20 pts on game day', roof: false },
+  'WSH': { name: "Nationals Park",    team: 'Nationals',  hr: 96,  note: 'Slightly suppressive · Large outfield', roof: false },
+  'NYM': { name: 'Citi Field',        team: 'Mets',       hr: 95,  note: 'Suppressive especially to LHB', roof: false },
+  'STL': { name: 'Busch Stadium',     team: 'Cardinals',  hr: 93,  note: 'Neutral to slight pitcher-friendly', roof: false },
+  'CLE': { name: 'Progressive Field', team: 'Guardians',  hr: 90,  note: 'Cold April/May temperatures hurt', roof: false },
+  'SEA': { name: 'T-Mobile Park',     team: 'Mariners',   hr: 89,  note: 'Marine air + deep CF = HR suppressor', roof: true },
+  'ARI': { name: 'Chase Field',       team: 'D-backs',    hr: 88,  note: 'Dome neutralizes heat advantage', roof: true },
+  'OAK': { name: 'Oakland',           team: 'Athletics',  hr: 87,  note: 'Cold bay area conditions', roof: false },
+  'KC':  { name: 'Kauffman Stadium',  team: 'Royals',     hr: 95,  note: '⚠️ 2026 renovations — fences moved in. Historical 83 is obsolete.', roof: false },
+  'MIA': { name: 'loanDepot Park',    team: 'Marlins',    hr: 86,  note: 'Dome but traditionally suppressive', roof: true },
+  'CWS': { name: 'Rate Field',        team: 'White Sox',  hr: 85,  note: 'Dimensions and air work against power', roof: false },
+  'TB':  { name: 'Steinbrenner Field',team: 'Rays',       hr: 84,  note: 'Outdoor 2025+ · Adjustment period', roof: false },
+  'LAA': { name: 'Angel Stadium',     team: 'Angels',     hr: 83,  note: 'Deep center suppresses HR totals', roof: false },
+  'SF':  { name: 'Oracle Park',       team: 'Giants',     hr: 80,  note: 'Marine layer + deep CF · Brutal for LHB (-23%)', roof: false },
+  'PIT': { name: 'PNC Park',          team: 'Pirates',    hr: 78,  note: '2nd lowest HR total in MLB (2020-24)', roof: false },
+  'SD':  { name: 'Petco Park',        team: 'Padres',     hr: 74,  note: 'Lowest HR factor in NL · Cold April nights', roof: false },
+};
+
+// ─── State ─────────────────────────────────────────────
+let csvData = [null, null, null]; // [batters, pitchersLHB, pitchersRHB]
+let parsedBatters = [];
+let parsedPitchers = [];
+let hrResults = [];
+let activeFilter = 'all';
+let activeSort = 'score';
+let searchQuery = '';
+
+// ─── Tab navigation ────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+}
+
+document.querySelectorAll('nav button[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// ─── File handling ─────────────────────────────────────
+function handleFile(e, idx) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    csvData[idx] = ev.target.result;
+    const zone = document.getElementById('zone-' + idx);
+    const status = document.getElementById('status-' + idx);
+    zone.classList.add('loaded');
+    status.className = 'upload-status status-loaded';
+    status.textContent = `✓ ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+    checkRunReady();
+    toast(`CSV ${idx + 1} loaded: ${file.name}`);
+  };
+  reader.readAsText(file);
+}
+
+function checkRunReady() {
+  const loaded = csvData.filter(Boolean).length;
+  const btn = document.getElementById('run-btn');
+  btn.disabled = loaded < 3;
+  if (loaded < 3) btn.textContent = `⏳ LOAD ${3-loaded} MORE CSV${3-loaded>1?'S':''} TO CONTINUE`;
+  else btn.textContent = '🔬 RUN HR PREDICTION MODEL';
+}
+
+// ─── CSV Parser (fuzzy header matching) ────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+  return lines.slice(1).map(line => {
+    const values = parseCSVLine(line);
+    const row = {};
+    headers.forEach((h, i) => { row[h] = values[i] ? values[i].trim().replace(/^"|"$/g, '') : ''; });
+    return row;
+  }).filter(r => Object.values(r).some(v => v));
+}
+
+function parseCSVLine(line) {
+  const result = []; let current = ''; let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQuotes = !inQuotes; }
+    else if (ch === ',' && !inQuotes) { result.push(current); current = ''; }
+    else current += ch;
+  }
+  result.push(current);
+  return result;
+}
+
+// Fuzzy column finder
+function findCol(row, ...candidates) {
+  const keys = Object.keys(row);
+  for (const cand of candidates) {
+    const lc = cand.toLowerCase();
+    const found = keys.find(k => k.toLowerCase().includes(lc));
+    if (found && row[found] !== '') return row[found];
+  }
+  return null;
+}
+
+function numOrNull(v) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = parseFloat(String(v).replace(/[^0-9.\-]/g,''));
+  return isNaN(n) ? null : n;
+}
+
+// ─── BATTER PARSER ─────────────────────────────────────
+function parseBatterRow(row) {
+  return {
+    name:       findCol(row, 'player', 'batter', 'name') || 'Unknown',
+    hand:       (findCol(row, 'stand', 'bat hand', 'batter hand', 'b hand', 'side', 'batting') || '?').toUpperCase().charAt(0),
+    ev:         numOrNull(findCol(row, 'exit velocity', 'avg ev', 'avg exit velo', 'ev', 'exit vel')),
+    maxEv:      numOrNull(findCol(row, 'max ev', 'max exit', 'max exit velocity')),
+    launchAngle:numOrNull(findCol(row, 'launch angle', 'avg la', 'avg launch', 'la')),
+    barrelPct:  numOrNull(findCol(row, 'barrel%', 'barrel %', 'barrel pct', 'brls%', 'brl%')),
+    batSpeed:   numOrNull(findCol(row, 'bat speed', 'avg bat speed', 'bs', 'swing speed')),
+    hardHit:    numOrNull(findCol(row, 'hard hit%', 'hard hit %', 'hard%', 'hh%', 'hard contact')),
+    pullAir:    numOrNull(findCol(row, 'pull air%', 'pull air %', 'pull air', 'pullairpct', 'pull%')),
+    hrFB:       numOrNull(findCol(row, 'hr/fb', 'hr fb%', 'hr fb', 'home run fb', 'hr/fly')),
+    sweetSpot:  numOrNull(findCol(row, 'sweet spot%', 'sweet spot %', 'ss%', 'sweetspot')),
+    distance:   numOrNull(findCol(row, 'avg distance', 'distance', 'avg dist', 'avg hr dist')),
+    iso:        numOrNull(findCol(row, 'iso', 'isolated power', 'iso power')),
+    fbPct:      numOrNull(findCol(row, 'fb%', 'fly ball%', 'fly ball %', 'fb rate')),
+    team:       findCol(row, 'team', 'tm', 'club') || '',
+    opponent:   findCol(row, 'opp', 'opponent', 'vs', 'opposing team') || '',
+    pitcher:    findCol(row, 'pitcher', 'opposing pitcher', 'sp', 'starter', 'opp pitcher') || '',
+    pitcherHand:((findCol(row, 'pitcher hand', 'p hand', 'pitcher throws', 'throw', 'p throws') || '?').toUpperCase().charAt(0)),
+  };
+}
+
+// ─── PITCHER PARSER ────────────────────────────────────
+function parsePitcherRow(row, side) {
+  return {
+    name:       findCol(row, 'player', 'pitcher', 'name') || 'Unknown',
+    side,
+    ip:         numOrNull(findCol(row, 'ip', 'innings pitched', 'innings')),
+    hr:         numOrNull(findCol(row, ' hr', 'home runs', 'hrs')),
+    hrPer9:     numOrNull(findCol(row, 'hr/9', 'hr per 9', 'hr9', 'hr/9ip', 'home runs per 9')),
+    hardHit:    numOrNull(findCol(row, 'hard hit%', 'hard%', 'hh%', 'hard contact allowed', 'hard hit allowed')),
+    barrelPct:  numOrNull(findCol(row, 'barrel%', 'barrel %', 'brl%', 'barrel% allowed')),
+    fbPct:      numOrNull(findCol(row, 'fb%', 'fly ball%', 'fb rate')),
+    team:       findCol(row, 'team', 'tm', 'club') || '',
+  };
+}
+
+// ─── SCORING ENGINE ────────────────────────────────────
+function scoreBatter(batter, pitcherLHB, pitcherRHB) {
+  // Get the correct pitcher split based on batter handedness
+  const pitcherSplit = batter.hand === 'L' ? pitcherRHB : pitcherLHB;
+
+  let scores = {};
+
+  // 1. EXIT VELOCITY (max 22)
+  const ev = batter.ev || 88;
+  scores.ev = ev >= 115 ? 22 : ev >= 112 ? 20 : ev >= 108 ? 17 : ev >= 104 ? 13 : ev >= 100 ? 9 : ev >= 96 ? 5 : 2;
+
+  // 2. BARREL% — highest weight individually (max 22 combined with EV)
+  const barrel = batter.barrelPct || 0;
+  const barrelScore = barrel >= 20 ? 20 : barrel >= 15 ? 17 : barrel >= 12 ? 14 : barrel >= 9 ? 10 : barrel >= 6 ? 6 : 3;
+
+  // Combine EV + barrel into power score (cap 22)
+  scores.power = Math.min(22, Math.round((scores.ev * 0.5 + barrelScore * 0.5)));
+
+  // 3. LAUNCH ANGLE + SWEET SPOT (max 18)
+  const la = batter.launchAngle || 10;
+  const laScore = (la >= 25 && la <= 35) ? 10 : (la >= 20 && la < 25) ? 8 : (la >= 15 && la < 20) ? 6 : (la >= 10 && la < 15) ? 4 : 2;
+  const ss = batter.sweetSpot || 25;
+  const ssScore = ss >= 40 ? 8 : ss >= 35 ? 6 : ss >= 30 ? 5 : ss >= 25 ? 3 : 1;
+  scores.elevation = Math.min(18, laScore + ssScore);
+
+  // 4. BAT SPEED (max 12)
+  const bs = batter.batSpeed || 68;
+  scores.batSpeed = bs >= 78 ? 12 : bs >= 75 ? 10 : bs >= 72 ? 8 : bs >= 70 ? 6 : bs >= 67 ? 4 : 2;
+
+  // 5. PITCHER VULNERABILITY (max 20)
+  const phrPer9 = pitcherSplit ? (pitcherSplit.hrPer9 || 1.0) : 1.0;
+  const pBarrel = pitcherSplit ? (pitcherSplit.barrelPct || 7) : 7;
+  const pHard = pitcherSplit ? (pitcherSplit.hardHit || 35) : 35;
+  const pHr9Score = phrPer9 >= 2.0 ? 12 : phrPer9 >= 1.5 ? 10 : phrPer9 >= 1.2 ? 8 : phrPer9 >= 1.0 ? 6 : phrPer9 >= 0.7 ? 4 : 2;
+  const pBarrelScore = pBarrel >= 12 ? 5 : pBarrel >= 9 ? 4 : pBarrel >= 7 ? 3 : pBarrel >= 5 ? 2 : 1;
+  const pHardScore = pHard >= 45 ? 3 : pHard >= 40 ? 2 : 1;
+  scores.pitcher = Math.min(20, pHr9Score + pBarrelScore + pHardScore);
+
+  // 6. PLATOON ADVANTAGE (max 10)
+  const batterHand = batter.hand || '?';
+  const pitcherHand = batter.pitcherHand || '?';
+  if (batterHand !== '?' && pitcherHand !== '?') {
+    scores.platoon = (batterHand !== pitcherHand) ? 10 : (batterHand === 'S') ? 7 : 3;
+  } else { scores.platoon = 5; }
+
+  // 7. PULL AIR% + HR/FB (max 10)
+  const pullAir = batter.pullAir || 10;
+  const hrFB = batter.hrFB || 10;
+  const pullScore = pullAir >= 25 ? 5 : pullAir >= 20 ? 4 : pullAir >= 15 ? 3 : pullAir >= 10 ? 2 : 1;
+  const hrFBScore = hrFB >= 25 ? 5 : hrFB >= 18 ? 4 : hrFB >= 13 ? 3 : hrFB >= 8 ? 2 : 1;
+  scores.pullHrFB = pullScore + hrFBScore;
+
+  // 8. HARD HIT% (max 5)
+  const hh = batter.hardHit || 35;
+  scores.hardHit = hh >= 55 ? 5 : hh >= 48 ? 4 : hh >= 40 ? 3 : hh >= 35 ? 2 : 1;
+
+  // Total raw score
+  const raw = scores.power + scores.elevation + scores.batSpeed + scores.pitcher + scores.platoon + scores.pullHrFB + scores.hardHit;
+
+  // Normalize to 0-100
+  const total = Math.min(100, Math.round((raw / 97) * 100));
+
+  // Tier
+  const tier = total >= 80 ? 'ELITE' : total >= 65 ? 'PRIME' : total >= 45 ? 'SOLID' : 'WATCH';
+
+  return { ...batter, scores, total, tier, pitcherSplit, phrPer9, pBarrel };
+}
+
+// ─── RUN MODEL ─────────────────────────────────────────
+function runModel() {
+  toast('Parsing CSVs...');
+
+  const rawBatters = parseCSV(csvData[0]);
+  const rawLHB = parseCSV(csvData[1]);
+  const rawRHB = parseCSV(csvData[2]);
+
+  parsedBatters = rawBatters.map(parseBatterRow).filter(b => b.name !== 'Unknown');
+
+  // Build pitcher lookups by name
+  const pitcherMapLHB = {};
+  rawLHB.map(r => parsePitcherRow(r, 'LHB')).forEach(p => {
+    if (p.name !== 'Unknown') pitcherMapLHB[p.name.toLowerCase()] = p;
+  });
+  const pitcherMapRHB = {};
+  rawRHB.map(r => parsePitcherRow(r, 'RHB')).forEach(p => {
+    if (p.name !== 'Unknown') pitcherMapRHB[p.name.toLowerCase()] = p;
+  });
+
+  // Store all pitchers for the pitcher tab
+  parsedPitchers = [
+    ...Object.values(pitcherMapLHB).map(p => ({...p, side:'vs LHB'})),
+    ...Object.values(pitcherMapRHB).map(p => ({...p, side:'vs RHB'})),
+  ];
+
+  // Score each batter: match opposing pitcher
+  hrResults = parsedBatters.map(batter => {
+    const pName = (batter.pitcher || '').toLowerCase();
+    const lhbMatch = pName ? Object.keys(pitcherMapLHB).find(k => k.includes(pName) || pName.includes(k)) : null;
+    const rhbMatch = pName ? Object.keys(pitcherMapRHB).find(k => k.includes(pName) || pName.includes(k)) : null;
+    const pitcherLHB = lhbMatch ? pitcherMapLHB[lhbMatch] : null;
+    const pitcherRHB = rhbMatch ? pitcherMapRHB[rhbMatch] : null;
+    return scoreBatter(batter, pitcherLHB, pitcherRHB);
+  });
+
+  hrResults.sort((a, b) => b.total - a.total);
+
+  renderBoard();
+  renderPitcherTab();
+  document.getElementById('board-subtitle').textContent =
+    `${hrResults.length} batters scored · ${parsedPitchers.length/2 | 0} pitchers analyzed`;
+
+  toast(`✓ Model complete · ${hrResults.length} HR candidates ranked`);
+  switchTab('board');
+}
+
+// ─── RENDER BOARD ──────────────────────────────────────
+function renderBoard() {
+  let data = hrResults.slice();
+
+  if (activeFilter !== 'all') data = data.filter(p => p.tier === activeFilter);
+  if (searchQuery) data = data.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  if (activeSort === 'ev') data.sort((a,b) => (b.ev||0)-(a.ev||0));
+  else if (activeSort === 'barrel') data.sort((a,b) => (b.barrelPct||0)-(a.barrelPct||0));
+  else if (activeSort === 'pitcher') data.sort((a,b) => (b.phrPer9||0)-(a.phrPer9||0));
+  else if (activeSort === 'batspeed') data.sort((a,b) => (b.batSpeed||0)-(a.batSpeed||0));
+  else data.sort((a,b) => b.total - a.total);
+
+  const grid = document.getElementById('board-grid');
+
+  if (!data.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-title">NO RESULTS</div><div class="empty-sub">Adjust filters or search</div></div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map((p, i) => {
+    const rank = hrResults.indexOf(p) + 1;
+    const scoreAngle = p.total * 3.6;
+    const platoonLabel = p.hand !== '?' && p.pitcherHand !== '?' ?
+      (p.hand !== p.pitcherHand ? '✅ Platoon Adv' : '⚠️ Same Hand') : '? Handedness';
+    const platoonClass = p.hand !== '?' && p.pitcherHand !== '?' ?
+      (p.hand !== p.pitcherHand ? 'platoon-adv' : 'platoon-dis') : 'platoon-neu';
+
+    const factors = [
+      { key: 'POWER',    val: p.scores.power,   max: 22, color: '#00d4b8' },
+      { key: 'ELEV',     val: p.scores.elevation,max: 18, color: '#f5a623' },
+      { key: 'BAT SPD',  val: p.scores.batSpeed, max: 12, color: '#a78bfa' },
+      { key: 'PITCHER',  val: p.scores.pitcher,  max: 20, color: '#ff4466' },
+      { key: 'PLATOON',  val: p.scores.platoon,  max: 10, color: '#39d98a' },
+      { key: 'PULL/FB',  val: p.scores.pullHrFB, max: 10, color: '#ffd700' },
+    ];
+
+    const evClass = (p.ev || 0) >= 112 ? 'elite' : (p.ev || 0) >= 105 ? 'hot' : '';
+    const barrelClass = (p.barrelPct || 0) >= 15 ? 'elite' : (p.barrelPct || 0) >= 10 ? 'hot' : '';
+    const pitcherClass = (p.phrPer9 || 0) >= 1.5 ? 'danger' : (p.phrPer9 || 0) >= 1.2 ? 'hot' : '';
+
+    return `
+    <div class="hr-card ${p.tier.toLowerCase()}" onclick="openModal(${hrResults.indexOf(p)})" style="animation-delay:${i*0.04}s">
+      <div class="card-header">
+        <div class="player-info">
+          <div class="player-rank">#${rank}</div>
+          <div class="player-name">${p.name}</div>
+          <div class="player-meta">${p.team || '—'} · ${p.hand === 'L' ? 'LHB' : p.hand === 'R' ? 'RHB' : p.hand === 'S' ? 'SWITCH' : '?'}</div>
+          <div class="platoon-chip ${platoonClass}">${platoonLabel}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <div class="score-ring" style="background:conic-gradient(var(--teal) ${scoreAngle}deg, var(--border) ${scoreAngle}deg)">
+            <div class="score-ring-inner">
+              <span class="score-value">${p.total}</span>
+              <span class="score-label">/ 100</span>
+            </div>
+          </div>
+          <span class="tier-badge tier-${p.tier}">${p.tier}</span>
+        </div>
+      </div>
+
+      <div class="factor-bars">
+        ${factors.map(f => `
+          <div class="factor-row">
+            <span class="factor-key">${f.key}</span>
+            <div class="factor-bar-bg">
+              <div class="factor-bar-fill" style="width:${(f.val/f.max*100).toFixed(0)}%;background:${f.color}"></div>
+            </div>
+            <span class="factor-val" style="color:${f.color}">${f.val}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-item">
+          <span class="stat-val ${evClass}">${p.ev ? p.ev.toFixed(1) : '—'}</span>
+          <span class="stat-key">AVG EV</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val ${barrelClass}">${p.barrelPct != null ? p.barrelPct.toFixed(1)+'%' : '—'}</span>
+          <span class="stat-key">BARREL%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val">${p.batSpeed ? p.batSpeed.toFixed(1) : '—'}</span>
+          <span class="stat-key">BAT SPD</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val ${pitcherClass}">${p.phrPer9 != null ? p.phrPer9.toFixed(2) : '—'}</span>
+          <span class="stat-key">P HR/9</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="matchup-info">
+          vs <strong>${p.pitcher || 'TBD'}</strong> (${p.pitcherHand === 'L' ? 'LHP' : p.pitcherHand === 'R' ? 'RHP' : '?'})<br>
+          ${p.opponent ? '@ ' + p.opponent : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── FILTER / SORT / SEARCH ────────────────────────────
+function filterBoard(val, btn) {
+  activeFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBoard();
+}
+
+function sortBoard(val) {
+  activeSort = val;
+  renderBoard();
+}
+
+function searchBoard(val) {
+  searchQuery = val;
+  renderBoard();
+}
+
+// ─── MODAL ─────────────────────────────────────────────
+function openModal(idx) {
+  const p = hrResults[idx];
+  if (!p) return;
+
+  const factorDetails = [
+    { icon:'⚡', label:'Exit Velocity', score: p.scores.power, detail: `Avg EV: ${p.ev ? p.ev.toFixed(1) + ' mph' : '—'} · Max EV: ${p.maxEv ? p.maxEv.toFixed(1) + ' mph' : '—'}` },
+    { icon:'🛢️', label:'Barrel%', score: p.scores.power, detail: `Barrel%: ${p.barrelPct != null ? p.barrelPct.toFixed(1)+'%' : '—'} · Hard Hit%: ${p.hardHit ? p.hardHit.toFixed(1)+'%' : '—'}` },
+    { icon:'📐', label:'Launch Angle + Sweet Spot', score: p.scores.elevation, detail: `Avg LA: ${p.launchAngle ? p.launchAngle.toFixed(1)+'°' : '—'} · Sweet Spot%: ${p.sweetSpot ? p.sweetSpot.toFixed(1)+'%' : '—'}` },
+    { icon:'🏏', label:'Bat Speed', score: p.scores.batSpeed, detail: `Bat Speed: ${p.batSpeed ? p.batSpeed.toFixed(1)+' mph' : '—'}` },
+    { icon:'🎯', label:'Pitcher Vulnerability', score: p.scores.pitcher, detail: `HR/9: ${p.phrPer9 ? p.phrPer9.toFixed(2) : '—'} · Barrel% allowed: ${p.pBarrel ? p.pBarrel.toFixed(1)+'%' : '—'}` },
+    { icon:'↔️', label:'Platoon Advantage', score: p.scores.platoon, detail: `Batter: ${p.hand || '?'}HB vs Pitcher: ${p.pitcherHand || '?'}HP` },
+    { icon:'↗️', label:'Pull Air% + HR/FB', score: p.scores.pullHrFB, detail: `Pull Air%: ${p.pullAir ? p.pullAir.toFixed(1)+'%' : '—'} · HR/FB: ${p.hrFB ? p.hrFB.toFixed(1)+'%' : '—'}` },
+  ];
+
+  const analysis = generateAnalysis(p);
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-player-name">${p.name}</div>
+    <div class="modal-player-meta">
+      ${p.team || '—'} · ${p.hand === 'L' ? 'Left-Handed Batter' : p.hand === 'R' ? 'Right-Handed Batter' : 'Switch Hitter'} · 
+      Composite Score: <strong style="color:var(--teal)">${p.total}/100</strong> · 
+      <span class="tier-badge tier-${p.tier}" style="font-size:11px">${p.tier}</span>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">KEY STATCAST METRICS</div>
+      <div class="modal-stats-grid">
+        <div class="modal-stat">
+          <span class="modal-stat-val" style="${(p.ev||0)>=112?'color:var(--teal)':''}">${p.ev ? p.ev.toFixed(1) : '—'}</span>
+          <span class="modal-stat-key">Avg Exit Velo</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val" style="${(p.barrelPct||0)>=15?'color:var(--teal)':''}">${p.barrelPct != null ? p.barrelPct.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">Barrel%</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.batSpeed ? p.batSpeed.toFixed(1) : '—'}</span>
+          <span class="modal-stat-key">Bat Speed</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.launchAngle ? p.launchAngle.toFixed(1)+'°' : '—'}</span>
+          <span class="modal-stat-key">Launch Angle</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.hardHit ? p.hardHit.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">Hard Hit%</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.pullAir ? p.pullAir.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">Pull Air%</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.hrFB ? p.hrFB.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">HR/FB%</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.sweetSpot ? p.sweetSpot.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">Sweet Spot%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">FACTOR BREAKDOWN</div>
+      ${factorDetails.map(f => `
+        <div class="factor-detail-row">
+          <span class="factor-detail-icon">${f.icon}</span>
+          <div style="flex:1">
+            <div class="factor-detail-label">${f.label}</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px">${f.detail}</div>
+          </div>
+          <div class="factor-detail-bar-bg">
+            <div class="factor-detail-bar-fill" style="width:${Math.min(100, f.score * 5)}%"></div>
+          </div>
+          <span class="factor-detail-score">${f.score}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">MATCHUP ANALYSIS</div>
+      <div class="analysis-box">${analysis}</div>
+    </div>
+  `;
+
+  document.getElementById('modal').classList.add('open');
+}
+
+function generateAnalysis(p) {
+  const lines = [];
+  const tier = p.tier;
+  const evStr = p.ev ? `${p.ev.toFixed(1)} mph exit velocity` : 'unknown EV';
+  const barrelStr = p.barrelPct != null ? `${p.barrelPct.toFixed(1)}% barrel rate` : 'unknown barrel rate';
+
+  if (tier === 'ELITE') lines.push(`<strong>${p.name}</strong> profiles as a top dinger candidate today with a <strong>${evStr}</strong> and <strong>${barrelStr}</strong>.`);
+  else if (tier === 'PRIME') lines.push(`<strong>${p.name}</strong> is a strong HR candidate with solid underlying metrics — a <strong>${evStr}</strong> and <strong>${barrelStr}</strong>.`);
+  else lines.push(`<strong>${p.name}</strong> shows some HR potential today with <strong>${evStr}</strong> and <strong>${barrelStr}</strong>.`);
+
+  if (p.launchAngle) {
+    const laOpt = p.launchAngle >= 25 && p.launchAngle <= 35;
+    lines.push(` Launch angle of <strong>${p.launchAngle.toFixed(1)}°</strong> is ${laOpt ? 'optimal for home runs (25–35° zone)' : p.launchAngle < 25 ? 'slightly below optimal — watch for line-drive power instead' : 'above the ideal HR window'}.`);
+  }
+
+  if (p.pullAir) {
+    lines.push(` Pull Air% of <strong>${p.pullAir.toFixed(1)}%</strong> ${p.pullAir >= 20 ? '— strong pull-side power generation' : '— moderate pull tendency'}.`);
+  }
+
+  if (p.pitcher) {
+    const pAdv = p.phrPer9 && p.phrPer9 >= 1.2;
+    lines.push(` Facing <strong>${p.pitcher}</strong> (${p.pitcherHand === 'L' ? 'LHP' : p.pitcherHand === 'R' ? 'RHP' : '?'}), who gives up <strong>${p.phrPer9 ? p.phrPer9.toFixed(2) : '—'} HR/9</strong> vs ${p.hand === 'L' ? 'lefties' : 'righties'} — ${pAdv ? 'a favorable matchup' : 'not a strong matchup on paper'}.`);
+  }
+
+  if (p.hand && p.pitcherHand && p.hand !== p.pitcherHand) {
+    lines.push(` <strong>Platoon advantage confirmed</strong> — ${p.hand}HB vs ${p.pitcherHand}HP is the favorable split.`);
+  }
+
+  return lines.join('');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// ─── PITCHER TAB ───────────────────────────────────────
+function renderPitcherTab() {
+  if (!parsedPitchers.length) return;
+
+  const pitchers = parsedPitchers
+    .filter(p => p.hrPer9 != null)
+    .sort((a, b) => (b.hrPer9 || 0) - (a.hrPer9 || 0));
+
+  const rows = pitchers.map(p => {
+    const hrClass = (p.hrPer9 || 0) >= 1.5 ? 'val-hot' : (p.hrPer9 || 0) >= 1.2 ? 'val-warm' : 'val-cool';
+    const hardClass = (p.hardHit || 0) >= 45 ? 'val-hot' : (p.hardHit || 0) >= 38 ? 'val-warm' : 'val-cool';
+    const barrelClass = (p.barrelPct || 0) >= 12 ? 'val-hot' : (p.barrelPct || 0) >= 8 ? 'val-warm' : 'val-cool';
+    const targetLevel = (p.hrPer9 || 0) >= 1.5 ? 'HIGH' : (p.hrPer9 || 0) >= 1.0 ? 'MED' : 'LOW';
+    const targetClass = targetLevel === 'HIGH' ? 'target-high' : targetLevel === 'MED' ? 'target-med' : 'target-low';
+
+    return `<tr>
+      <td><span class="pitcher-name">${p.name}</span><span class="pitcher-hand">${p.side}</span></td>
+      <td class="val-neutral">${p.ip ? p.ip.toFixed(1) : '—'}</td>
+      <td class="val-neutral">${p.hr != null ? p.hr : '—'}</td>
+      <td class="${hrClass}">${p.hrPer9 != null ? p.hrPer9.toFixed(2) : '—'}</td>
+      <td class="${hardClass}">${p.hardHit != null ? p.hardHit.toFixed(1)+'%' : '—'}</td>
+      <td class="${barrelClass}">${p.barrelPct != null ? p.barrelPct.toFixed(1)+'%' : '—'}</td>
+      <td class="val-neutral">${p.fbPct != null ? p.fbPct.toFixed(1)+'%' : '—'}</td>
+      <td><span class="target-badge ${targetClass}">${targetLevel}</span></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('pitcher-content').innerHTML = `
+    <table class="pitcher-table">
+      <thead>
+        <tr>
+          <th>PITCHER</th>
+          <th>IP</th>
+          <th>HR</th>
+          <th>HR/9 ▼</th>
+          <th>HARD HIT%</th>
+          <th>BARREL%</th>
+          <th>FB%</th>
+          <th>TARGET</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">
+      🔴 HIGH = HR/9 ≥ 1.5 · 🟠 MED = 1.0–1.5 · 🟢 LOW = under 1.0
+    </div>`;
+}
+
+// ─── PARK TAB ──────────────────────────────────────────
+function renderParks() {
+  const sorted = Object.entries(PARK_FACTORS).sort((a,b) => b[1].hr - a[1].hr);
+  const grid = document.getElementById('park-grid');
+
+  grid.innerHTML = sorted.map(([code, park]) => {
+    const pct = Math.min(100, Math.max(0, ((park.hr - 60) / (140 - 60)) * 100));
+    const color = park.hr >= 120 ? '#ff4466' : park.hr >= 110 ? '#f5a623' : park.hr >= 100 ? '#ffd700' : park.hr >= 90 ? '#6b7280' : '#374151';
+    const label = park.hr >= 120 ? '🔥 STRONG HR PARK' : park.hr >= 110 ? '✅ HR FRIENDLY' : park.hr >= 100 ? '⚡ NEUTRAL' : park.hr >= 85 ? '❄️ SUPPRESSING' : '🚫 HR KILLER';
+
+    return `
+    <div class="park-card">
+      <div class="park-name">${park.name}</div>
+      <div class="park-team">${code} · ${park.team} ${park.roof ? '🏠' : '☀️'}</div>
+      <div class="park-factor-display">
+        <span class="park-factor-num" style="color:${color}">${park.hr}</span>
+        <span class="park-factor-label">HR FACTOR</span>
+      </div>
+      <div class="park-bar-bg">
+        <div class="park-bar-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+      <div class="park-trend">${label}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5">${park.note}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── TOAST ─────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ─── INIT ──────────────────────────────────────────────
+renderParks();
+</script>
+</body>
+</html>
