@@ -1,0 +1,2555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💣 DINGER LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:       #0a0c0f;
+    --surface:  #111318;
+    --card:     #161a22;
+    --border:   #1e2430;
+    --teal:     #00d4b8;
+    --amber:    #f5a623;
+    --gold:     #ffd700;
+    --red:      #ff4466;
+    --green:    #39d98a;
+    --blue:     #4da6ff;
+    --purple:   #a78bfa;
+    --text:     #e8eaf0;
+    --muted:    #6b7280;
+    --dim:      #374151;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ─────────────────────────────────── */
+  header {
+    background: linear-gradient(135deg, #0d1117 0%, #161a22 100%);
+    border-bottom: 2px solid var(--teal);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 32px rgba(0,212,184,0.08);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--amber));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+  }
+
+  .logo span {
+    font-size: 22px;
+  }
+
+  nav {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  nav::-webkit-scrollbar { display: none; }
+
+  nav button {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  nav button:hover { color: var(--text); background: var(--border); }
+
+  nav button.active {
+    background: rgba(0,212,184,0.12);
+    color: var(--teal);
+    border: 1px solid rgba(0,212,184,0.3);
+  }
+
+  .import-btn {
+    margin-left: auto;
+    background: linear-gradient(135deg, var(--teal), #00a896) !important;
+    color: #000 !important;
+    font-weight: 700 !important;
+    padding: 8px 20px !important;
+    font-size: 11px !important;
+  }
+
+  .import-btn:hover { opacity: 0.9; }
+
+  /* ─── MAIN ───────────────────────────────────── */
+  main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 20px;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ─── SECTION HEADER ─────────────────────────── */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 3px;
+    color: var(--teal);
+  }
+
+  .section-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* ─── IMPORT TAB ─────────────────────────────── */
+  .import-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .upload-zone {
+    background: var(--card);
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 32px 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--teal);
+    background: rgba(0,212,184,0.04);
+  }
+
+  .upload-zone.loaded {
+    border-color: var(--green);
+    border-style: solid;
+    background: rgba(57,217,138,0.04);
+  }
+
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+
+  .upload-icon { font-size: 36px; margin-bottom: 12px; }
+
+  .upload-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .upload-hint {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .upload-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+
+  .status-waiting { background: rgba(107,114,128,0.2); color: var(--muted); }
+  .status-loaded { background: rgba(57,217,138,0.15); color: var(--green); }
+
+  .import-cols {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 12px;
+    text-align: left;
+    line-height: 1.7;
+  }
+
+  .import-cols span { color: var(--amber); }
+
+  .run-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--teal), #00a896);
+    border: none;
+    border-radius: 10px;
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 28px;
+  }
+
+  .run-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 32px rgba(0,212,184,0.3); }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ─── FACTOR INFO ────────────────────────────── */
+  .factor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .factor-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px;
+    border-left: 3px solid;
+  }
+
+  .factor-card:nth-child(1) { border-left-color: var(--teal); }
+  .factor-card:nth-child(2) { border-left-color: var(--amber); }
+  .factor-card:nth-child(3) { border-left-color: var(--red); }
+  .factor-card:nth-child(4) { border-left-color: var(--blue); }
+  .factor-card:nth-child(5) { border-left-color: var(--purple); }
+  .factor-card:nth-child(6) { border-left-color: var(--green); }
+  .factor-card:nth-child(7) { border-left-color: var(--gold); }
+  .factor-card:nth-child(8) { border-left-color: #ff8c42; }
+
+  .factor-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .factor-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .factor-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .factor-weight {
+    display: inline-block;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    background: rgba(0,212,184,0.1);
+    color: var(--teal);
+  }
+
+  /* ─── LEADERBOARD TAB ────────────────────────── */
+  .controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .filter-group { display: flex; gap: 6px; }
+
+  .filter-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 1px;
+  }
+
+  .filter-btn.active {
+    background: rgba(245,166,35,0.12);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+
+  .sort-select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: auto;
+  }
+
+  .search-input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 7px 14px;
+    border-radius: 6px;
+    width: 180px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-input:focus { border-color: var(--teal); }
+  .search-input::placeholder { color: var(--muted); }
+
+  /* ─── HR CARD ────────────────────────────────── */
+  .board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  .hr-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hr-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--amber));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .hr-card:hover { transform: translateY(-2px); border-color: var(--dim); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+  .hr-card:hover::before { opacity: 1; }
+
+  .hr-card.elite { border-color: rgba(255,215,0,0.25); background: linear-gradient(135deg, #161a22 0%, #1a1810 100%); }
+  .hr-card.elite::before { opacity: 1; background: linear-gradient(90deg, var(--gold), var(--amber)); }
+  .hr-card.prime { border-color: rgba(0,212,184,0.2); }
+  .hr-card.prime::before { opacity: 1; }
+
+  .card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+
+  .player-info { flex: 1; }
+
+  .player-rank {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+  }
+
+  .player-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+
+  .player-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .tier-badge {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-left: 12px;
+    white-space: nowrap;
+  }
+
+  .tier-ELITE { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid rgba(255,215,0,0.3); }
+  .tier-PRIME { background: rgba(0,212,184,0.12); color: var(--teal); border: 1px solid rgba(0,212,184,0.25); }
+  .tier-SOLID { background: rgba(77,166,255,0.12); color: var(--blue); border: 1px solid rgba(77,166,255,0.25); }
+  .tier-WATCH { background: rgba(107,114,128,0.2); color: var(--muted); border: 1px solid var(--border); }
+
+  /* composite score ring */
+  .score-ring {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(var(--teal) 0% 0%, var(--border) 0% 100%);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .score-ring-inner {
+    position: absolute;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .score-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--text);
+  }
+
+  .score-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* factor bars */
+  .factor-bars { margin: 14px 0; display: flex; flex-direction: column; gap: 6px; }
+
+  .factor-row { display: flex; align-items: center; gap: 10px; }
+
+  .factor-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    width: 84px;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .factor-bar-bg {
+    flex: 1;
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .factor-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .factor-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    width: 32px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* stats strip */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin: 14px 0;
+    background: rgba(0,0,0,0.2);
+    border-radius: 8px;
+    padding: 10px;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    display: block;
+  }
+
+  .stat-val.hot { color: var(--amber); }
+  .stat-val.elite { color: var(--teal); }
+  .stat-val.danger { color: var(--red); }
+
+  .stat-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  /* card footer */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+
+  .matchup-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .matchup-info strong { color: var(--text); }
+
+  .odds-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    color: var(--amber);
+  }
+
+  /* platoon indicator */
+  .platoon-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+  }
+
+  .platoon-adv { background: rgba(57,217,138,0.12); color: var(--green); border: 1px solid rgba(57,217,138,0.2); }
+  .platoon-dis { background: rgba(255,68,102,0.1); color: var(--red); border: 1px solid rgba(255,68,102,0.2); }
+  .platoon-neu { background: rgba(107,114,128,0.15); color: var(--muted); border: 1px solid var(--border); }
+
+  /* ─── DETAIL MODAL ───────────────────────────── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--border);
+    border: none;
+    color: var(--muted);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { background: var(--dim); color: var(--text); }
+
+  .modal-player-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+  }
+
+  .modal-player-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .modal-section { margin-bottom: 24px; }
+
+  .modal-section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--teal);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .modal-stat {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+
+  .modal-stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .modal-stat-key {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .analysis-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .factor-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .factor-detail-row:last-child { border-bottom: none; }
+
+  .factor-detail-icon { font-size: 18px; width: 24px; flex-shrink: 0; }
+
+  .factor-detail-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .factor-detail-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 500;
+    width: 40px;
+    text-align: right;
+  }
+
+  .factor-detail-bar-bg {
+    width: 80px;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .factor-detail-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--amber));
+  }
+
+  /* ─── PITCHER TAB ────────────────────────────── */
+  .pitcher-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+
+  .pitcher-table th {
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .pitcher-table th:hover { color: var(--teal); }
+  .pitcher-table th.sorted { color: var(--amber); }
+
+  .pitcher-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(30,36,48,0.6);
+    vertical-align: middle;
+  }
+
+  .pitcher-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .pitcher-name { color: var(--text); font-size: 13px; }
+  .pitcher-hand { color: var(--muted); font-size: 10px; display: block; }
+
+  .val-hot { color: var(--red) !important; }
+  .val-warm { color: var(--amber) !important; }
+  .val-cool { color: var(--green) !important; }
+  .val-neutral { color: var(--text); }
+
+  .target-badge {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .target-high { background: rgba(255,68,102,0.15); color: var(--red); border: 1px solid rgba(255,68,102,0.3); }
+  .target-med { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
+  .target-low { background: rgba(107,114,128,0.15); color: var(--muted); border: 1px solid var(--border); }
+
+  /* ─── PARK TAB ───────────────────────────────── */
+  .park-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .park-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: all 0.2s;
+  }
+
+  .park-card:hover { border-color: var(--dim); transform: translateY(-1px); }
+
+  .park-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .park-team {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .park-factor-display {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .park-factor-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .park-factor-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  .park-bar-bg {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .park-bar-fill { height: 100%; border-radius: 2px; }
+
+  .park-trend {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    margin-top: 8px;
+    color: var(--muted);
+  }
+
+  /* ─── ANALYSIS BOX SHARED ────────────────────── */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .insight-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .insight-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: var(--amber);
+    margin-bottom: 8px;
+  }
+
+  .insight-text {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .insight-text strong { color: var(--text); }
+
+  /* ─── EMPTY / NO DATA ────────────────────────── */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--muted);
+  }
+
+  .empty-icon { font-size: 64px; margin-bottom: 20px; opacity: 0.5; }
+
+  .empty-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+
+  .empty-sub { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.5px; }
+
+  /* ─── TOAST ──────────────────────────────────── */
+  #toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--teal);
+    border-radius: 10px;
+    padding: 14px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--teal);
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.3s;
+    pointer-events: none;
+  }
+
+  #toast.show { opacity: 1; transform: translateY(0); }
+
+  /* ─── RESPONSIVE ─────────────────────────────── */
+  @media (max-width: 768px) {
+    .import-grid { grid-template-columns: 1fr; }
+    .board { grid-template-columns: 1fr; }
+    .modal-stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-strip { grid-template-columns: repeat(2, 1fr); }
+    header { gap: 12px; padding: 0 14px; }
+    .logo { font-size: 22px; }
+    main { padding: 16px 12px; }
+  }
+
+  /* ─── SCROLLBAR ──────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--dim); }
+
+  /* ─── PULSE ANIMATION ────────────────────────── */
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .pulse { animation: pulse 2s infinite; }
+
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .hr-card { animation: fadeIn 0.3s ease backwards; }
+
+  /* ─── WEATHER TAB ────────────────────────────── */
+  .weather-legend {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--amber);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+  .legend-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: var(--amber);
+    margin-bottom: 10px;
+  }
+  .legend-items { display: flex; flex-wrap: wrap; gap: 10px 24px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .legend-icon { font-size: 14px; }
+
+  .weather-key-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .wkey-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .wkey-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wkey-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .wkey-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .wkey-chip.cold  { background: rgba(77,166,255,0.15); color: var(--blue); border: 1px solid rgba(77,166,255,0.25); }
+  .wkey-chip.cool  { background: rgba(107,114,128,0.15); color: var(--muted); border: 1px solid var(--border); }
+  .wkey-chip.warm  { background: rgba(245,166,35,0.12); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
+  .wkey-chip.hot   { background: rgba(255,140,66,0.15); color: #ff8c42; border: 1px solid rgba(255,140,66,0.25); }
+  .wkey-chip.fire  { background: rgba(255,68,102,0.12); color: var(--red); border: 1px solid rgba(255,68,102,0.25); }
+  .wkey-chip.good  { background: rgba(57,217,138,0.12); color: var(--green); border: 1px solid rgba(57,217,138,0.25); }
+  .wkey-chip.bad   { background: rgba(255,68,102,0.12); color: var(--red); border: 1px solid rgba(255,68,102,0.25); }
+  .wkey-chip.neu2  { background: rgba(107,114,128,0.12); color: var(--muted); border: 1px solid var(--border); }
+  .wkey-effect { font-family: 'DM Mono', monospace; font-size: 10px; }
+  .wkey-effect.pos { color: var(--green); }
+  .wkey-effect.neg { color: var(--red); }
+  .wkey-effect.neu { color: var(--muted); }
+
+  .weather-games-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .weather-game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 14px;
+  }
+
+  .wgame-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s;
+  }
+  .wgame-card.has-data { border-color: rgba(0,212,184,0.25); }
+  .wgame-card.dome-park { border-color: rgba(107,114,128,0.3); opacity: 0.7; }
+
+  .wgame-matchup {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1.5px;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+  .wgame-park {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+  .wgame-dome-note {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 8px;
+    background: rgba(107,114,128,0.1);
+    border-radius: 6px;
+    text-align: center;
+  }
+
+  .wgame-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .wfield { display: flex; flex-direction: column; gap: 4px; }
+  .wfield label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+  .wfield input, .wfield select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 7px 10px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  .wfield input:focus, .wfield select:focus { border-color: var(--teal); }
+  .wfield select option { background: var(--surface); }
+
+  .wgame-hr-adj {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    text-align: center;
+    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+  }
+  .wgame-hr-adj.boost { background: rgba(57,217,138,0.08); border-color: rgba(57,217,138,0.3); color: var(--green); }
+  .wgame-hr-adj.suppress { background: rgba(255,68,102,0.08); border-color: rgba(255,68,102,0.2); color: var(--red); }
+  .wgame-hr-adj.neutral { color: var(--muted); }
+
+  /* weather chip on HR card */
+  .weather-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+  .weather-chip.boost { background: rgba(57,217,138,0.1); color: var(--green); border: 1px solid rgba(57,217,138,0.2); }
+  .weather-chip.suppress { background: rgba(255,68,102,0.08); color: var(--red); border: 1px solid rgba(255,68,102,0.15); }
+  .weather-chip.neutral { background: rgba(107,114,128,0.12); color: var(--muted); border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">💣 <span>DINGER LAB</span></div>
+  <nav id="nav">
+    <button class="active" data-tab="import">⬆ Import Data</button>
+    <button data-tab="board">🎯 HR Board</button>
+    <button data-tab="pitchers">⚾ Pitcher Targets</button>
+    <button data-tab="parks">🏟️ Park Factors</button>
+    <button data-tab="weather">🌤️ Weather</button>
+  </nav>
+  <button class="filter-btn import-btn" onclick="switchTab('import')">LOAD CSV</button>
+</header>
+
+<main>
+
+<!-- ══════════════ IMPORT TAB ══════════════ -->
+<div class="tab-content active" id="tab-import">
+  <div class="section-header">
+    <div class="section-title">LOAD PROPFINDER DATA</div>
+    <div class="section-sub">Upload 3 CSVs · Auto-parsed · Powers the full model</div>
+  </div>
+
+  <div class="import-grid">
+    <div class="upload-zone" id="zone-0">
+      <input type="file" accept=".csv" onchange="handleFile(event, 0)">
+      <div class="upload-icon">🏏</div>
+      <div class="upload-label">Batter Data</div>
+      <div class="upload-hint">Full event CSV · Auto-uses last 15 BIP per player</div>
+      <div class="upload-status status-waiting" id="status-0">⏳ Waiting</div>
+      <div class="import-cols">
+        Priority columns:<br>
+        <span>Batter name, handedness</span><br>
+        <span>Exit velocity, launch angle</span><br>
+        <span>Barrel%, bat speed</span><br>
+        <span>Pull Air%, HR/FB, distance</span><br>
+        <span>Sweet spot%, hard hit%</span>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="zone-1">
+      <input type="file" accept=".csv" onchange="handleFile(event, 1)">
+      <div class="upload-icon">🆘</div>
+      <div class="upload-label">Pitchers vs LHB</div>
+      <div class="upload-hint">Upload second · Left-handed batters</div>
+      <div class="upload-status status-waiting" id="status-1">⏳ Waiting</div>
+      <div class="import-cols">
+        Priority columns:<br>
+        <span>Pitcher name, IP</span><br>
+        <span>HR, HR/9 vs LHB</span><br>
+        <span>Hard hit%, barrel%</span><br>
+        <span>Fly ball% allowed</span>
+      </div>
+    </div>
+
+    <div class="upload-zone" id="zone-2">
+      <input type="file" accept=".csv" onchange="handleFile(event, 2)">
+      <div class="upload-icon">🆚</div>
+      <div class="upload-label">Pitchers vs RHB</div>
+      <div class="upload-hint">Upload third · Right-handed batters</div>
+      <div class="upload-status status-waiting" id="status-2">⏳ Waiting</div>
+      <div class="import-cols">
+        Priority columns:<br>
+        <span>Pitcher name, IP</span><br>
+        <span>HR, HR/9 vs RHB</span><br>
+        <span>Hard hit%, barrel%</span><br>
+        <span>Fly ball% allowed</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="run-btn" id="run-btn" disabled onclick="runModel()">
+    🔬 RUN HR PREDICTION MODEL
+  </button>
+
+  <!-- Factor breakdown -->
+  <div class="section-header">
+    <div class="section-title">8-FACTOR MODEL</div>
+    <div class="section-sub">Research-backed composite scoring</div>
+  </div>
+
+  <div class="factor-grid">
+    <div class="factor-card">
+      <div class="factor-name">Factor 1 — Primary Power</div>
+      <div class="factor-title">Exit Velocity + Barrel%</div>
+      <div class="factor-desc">Barrel% is the single strongest Statcast predictor of future HRs. ~85% of all HRs are barrels. EV 95+ mph is required threshold. Elite: EV 112+ / Barrel 15%+.</div>
+      <span class="factor-weight">Weight: 22%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 2 — Elevation</div>
+      <div class="factor-title">Launch Angle + Sweet Spot%</div>
+      <div class="factor-desc">Optimal HR launch angle is 25–35°. Sweet Spot% (8-32° range) measures consistency. Pull Air% reveals pull-field power generation — most HRs are pulled.</div>
+      <span class="factor-weight">Weight: 18%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 3 — Bat Speed</div>
+      <div class="factor-title">Bat Speed + Fast Swing%</div>
+      <div class="factor-desc">Bat speed directly drives exit velocity. Every mph of bat speed adds ~1.2 mph of EV. Elite bat speed (75+ mph avg) with high hard-hit% = premium dinger profile.</div>
+      <span class="factor-weight">Weight: 12%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 4 — Pitcher Vulnerability</div>
+      <div class="factor-title">HR/9 + Barrel% Allowed</div>
+      <div class="factor-desc">Pitchers above 1.4 HR/9 are high-leverage targets. Barrel% allowed and hard-hit% give the true quality of contact surrendered — not just results.</div>
+      <span class="factor-weight">Weight: 20%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 5 — Platoon</div>
+      <div class="factor-title">Batter/Pitcher Handedness</div>
+      <div class="factor-desc">Handedness splits vs specific pitcher side (LHB vs RHP, RHB vs LHP are favored matchups). Pitcher's HR splits by batter hand are loaded directly from CSV files.</div>
+      <span class="factor-weight">Weight: 10%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 6 — Park Factor</div>
+      <div class="factor-title">HR Park Index (2025–26)</div>
+      <div class="factor-desc">UNIQLO Field (LAD) leads all parks at 135 HR factor. Coors, Camden, GABP are also strong. Oracle/PNC/Comerica suppress. Factor adjusts composite score ±15 pts.</div>
+      <span class="factor-weight">Weight: 10%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 7 — Hot Streak</div>
+      <div class="factor-title">Recent HR Rate + Distance</div>
+      <div class="factor-desc">Avg distance on fly balls indicates current power. HR/FB rate over recent games shows who's elevating well right now. Form matters — momentum is real.</div>
+      <span class="factor-weight">Weight: 5%</span>
+    </div>
+    <div class="factor-card">
+      <div class="factor-name">Factor 8 — HR/FB Ratio</div>
+      <div class="factor-title">Power Conversion Rate</div>
+      <div class="factor-desc">% of fly balls that leave the yard. League avg ~12%. 18%+ = legitimate power. Below 10% without supporting metrics suggests regression incoming — or a prime buy-low spot.</div>
+      <span class="factor-weight">Weight: 3%</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ BOARD TAB ══════════════ -->
+<div class="tab-content" id="tab-board">
+  <div class="section-header">
+    <div class="section-title">HR PREDICTION BOARD</div>
+    <div class="section-sub" id="board-subtitle">Load data to generate rankings</div>
+  </div>
+
+  <div class="controls-bar">
+    <div class="filter-group">
+      <button class="filter-btn active" onclick="filterBoard('all', this)">ALL</button>
+      <button class="filter-btn" onclick="filterBoard('ELITE', this)">⭐ ELITE</button>
+      <button class="filter-btn" onclick="filterBoard('PRIME', this)">🔥 PRIME</button>
+      <button class="filter-btn" onclick="filterBoard('SOLID', this)">✓ SOLID</button>
+    </div>
+    <input type="text" class="search-input" placeholder="Search player..." oninput="searchBoard(this.value)">
+    <select class="sort-select" onchange="sortBoard(this.value)">
+      <option value="score">Sort: Composite Score</option>
+      <option value="ev">Sort: Exit Velocity</option>
+      <option value="barrel">Sort: Barrel%</option>
+      <option value="pitcher">Sort: Pitcher HR/9</option>
+      <option value="batspeed">Sort: Bat Speed</option>
+    </select>
+  </div>
+
+  <div class="board" id="board-grid">
+    <div class="empty-state" style="grid-column:1/-1">
+      <div class="empty-icon">💣</div>
+      <div class="empty-title">NO DATA LOADED</div>
+      <div class="empty-sub">Upload CSVs in the Import tab · Then hit RUN MODEL</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PITCHERS TAB ══════════════ -->
+<div class="tab-content" id="tab-pitchers">
+  <div class="section-header">
+    <div class="section-title">PITCHER TARGETS</div>
+    <div class="section-sub">Sorted by HR vulnerability · Batter handedness split included</div>
+  </div>
+
+  <div id="pitcher-content">
+    <div class="empty-state">
+      <div class="empty-icon">⚾</div>
+      <div class="empty-title">AWAITING PITCHER DATA</div>
+      <div class="empty-sub">Upload LHB + RHB pitcher CSVs · Then run model</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PARKS TAB ══════════════ -->
+<div class="tab-content" id="tab-parks">
+  <div class="section-header">
+    <div class="section-title">PARK FACTORS</div>
+    <div class="section-sub">2025–26 HR index · 100 = league average · Source: Baseball Savant</div>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="insight-title">🏆 BEST FOR HR BETS</div>
+      <div class="insight-text">
+        <strong>UNIQLO Field (LAD)</strong> — 135 factor, #1 in baseball. Dry heat + minimal wind + elite lineup.<br><br>
+        <strong>Coors Field (COL)</strong> — Altitude supercharges ball carry. Legit cheat code.<br><br>
+        <strong>Camden Yards (BAL)</strong> — Jumped to #2 after fence changes (121 factor). Huge for RHB power.
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">⚠️ AVOID / FADE</div>
+      <div class="insight-text">
+        <strong>Oracle Park (SF)</strong> — Marine layer + deep CF suppress HRs, especially for LHB.<br><br>
+        <strong>PNC Park (PIT)</strong> — Second lowest HR total across last 5 seasons.<br><br>
+        <strong>Petco Park (SD)</strong> — HR suppressor since construction. Cold marine air in April.
+      </div>
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">🔨 2026 RENOVATIONS</div>
+      <div class="insight-text">
+        <strong>Kauffman Stadium (KC)</strong> — Walls moved in significantly for 2026. Historical factor (83) is OBSOLETE — expect major HR jump.<br><br>
+        <strong>Camden Yards (BAL)</strong> — Left field fence adjustments now fully in effect. RHB pull hitters now thrive.
+      </div>
+    </div>
+  </div>
+
+  <div class="park-grid" id="park-grid">
+    <!-- rendered by JS -->
+  </div>
+</div>
+
+<!-- ══════════════ WEATHER TAB ══════════════ -->
+<div class="tab-content" id="tab-weather">
+  <div class="section-header">
+    <div class="section-title">BALLPARK PAL WEATHER</div>
+    <div class="section-sub">Enter today's conditions per game · Feeds directly into HR scores</div>
+  </div>
+
+  <div class="weather-legend">
+    <div class="legend-title">HOW TO USE</div>
+    <div class="legend-items">
+      <div class="legend-item"><span class="legend-icon">📋</span><span>Open Ballpark Pal → Home Run Zone → enter each game below</span></div>
+      <div class="legend-item"><span class="legend-icon">🏠</span><span>Dome parks auto-skip weather — no entry needed</span></div>
+      <div class="legend-item"><span class="legend-icon">🎯</span><span>HR% adjustment feeds directly into each batter's composite score</span></div>
+      <div class="legend-item"><span class="legend-icon">💾</span><span>Data saves to browser — persists until you clear it</span></div>
+    </div>
+  </div>
+
+  <div class="weather-key-grid">
+    <div class="wkey-card">
+      <div class="wkey-title">🌡️ TEMPERATURE</div>
+      <div class="wkey-row"><span class="wkey-chip cold">❄️ &lt;55°F</span><span class="wkey-effect neg">Suppresses carry</span></div>
+      <div class="wkey-row"><span class="wkey-chip cool">🟡 56–75°F</span><span class="wkey-effect neu">Neutral</span></div>
+      <div class="wkey-row"><span class="wkey-chip warm">🟠 76–82°F</span><span class="wkey-effect pos">Slight boost</span></div>
+      <div class="wkey-row"><span class="wkey-chip hot">🔴 83–90°F</span><span class="wkey-effect pos">Good boost</span></div>
+      <div class="wkey-row"><span class="wkey-chip fire">🔥 90°F+</span><span class="wkey-effect pos">Max carry</span></div>
+    </div>
+    <div class="wkey-card">
+      <div class="wkey-title">💨 WIND DIRECTION</div>
+      <div class="wkey-row"><span class="wkey-chip good">↗ Out to RF</span><span class="wkey-effect pos">+HR for RHB pull</span></div>
+      <div class="wkey-row"><span class="wkey-chip good">↖ Out to LF</span><span class="wkey-effect pos">+HR for LHB pull</span></div>
+      <div class="wkey-row"><span class="wkey-chip good">↑ Out to CF</span><span class="wkey-effect pos">Moderate boost</span></div>
+      <div class="wkey-row"><span class="wkey-chip bad">↓ Blowing in</span><span class="wkey-effect neg">Suppresses all HR</span></div>
+      <div class="wkey-row"><span class="wkey-chip neu2">→ L-to-R / ← R-to-L</span><span class="wkey-effect neu">Neutral crosswind</span></div>
+    </div>
+    <div class="wkey-card">
+      <div class="wkey-title">📊 OTHER FACTORS</div>
+      <div class="wkey-row"><span class="wkey-chip good">H (green)</span><span class="wkey-effect pos">Humidity &gt;75% → better carry</span></div>
+      <div class="wkey-row"><span class="wkey-chip bad">H (red)</span><span class="wkey-effect neg">Humidity &lt;25% → worse carry</span></div>
+      <div class="wkey-row"><span class="wkey-chip good">P (green)</span><span class="wkey-effect pos">Low pressure &lt;1011mb → better carry</span></div>
+      <div class="wkey-row"><span class="wkey-chip bad">P (red)</span><span class="wkey-effect neg">High pressure &gt;1019mb → worse carry</span></div>
+      <div class="wkey-row"><span class="wkey-chip neu2">🏠 Roof closed</span><span class="wkey-effect neu">Neutralizes all weather</span></div>
+    </div>
+  </div>
+
+  <div class="weather-games-header">
+    <div class="section-title" style="font-size:22px">TODAY'S GAMES</div>
+    <button class="filter-btn" onclick="clearWeather()" style="margin-left:auto">🗑 Clear All</button>
+  </div>
+
+  <div id="weather-game-grid" class="weather-game-grid">
+    <!-- rendered by buildWeatherGrid() -->
+  </div>
+
+  <button class="run-btn" style="margin-top:24px" onclick="saveWeatherAndRun()">
+    💾 SAVE WEATHER + RE-RUN MODEL
+  </button>
+</div>
+
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" id="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  DINGER LAB — Core Logic
+// ═══════════════════════════════════════════════════════
+
+const PARK_FACTORS = {
+  'LAD': { name: 'UNIQLO Field',     team: 'Dodgers',    hr: 135, note: '#1 in MLB · Dry heat · No wind interference', roof: false },
+  'COL': { name: 'Coors Field',       team: 'Rockies',    hr: 130, note: 'Altitude-fueled carry · Always a cheat code', roof: false },
+  'BAL': { name: 'Camden Yards',      team: 'Orioles',    hr: 121, note: 'Fence changes boosted to #2 · RHB pull heaven', roof: false },
+  'NYY': { name: 'Yankee Stadium',    team: 'Yankees',    hr: 118, note: 'Short porch gifts LHB pull power', roof: false },
+  'CIN': { name: 'GABP',              team: 'Reds',       hr: 116, note: 'Historically elite for LHB (+42% vs league)', roof: false },
+  'TEX': { name: 'Globe Life Field',  team: 'Rangers',    hr: 113, note: 'Climate-controlled dome · Neutral conditions', roof: true },
+  'PHI': { name: "Citizens Bank Park",team: 'Phillies',   hr: 112, note: 'Wind and heat amplify fly balls', roof: false },
+  'ATL': { name: 'Truist Park',       team: 'Braves',     hr: 110, note: 'Summer heat boosts HR carry', roof: false },
+  'TOR': { name: "Rogers Centre",     team: 'Blue Jays',  hr: 108, note: 'Turf surface + short porch', roof: true },
+  'MIN': { name: 'Target Field',      team: 'Twins',      hr: 107, note: 'Neutral to slight hitter friendly', roof: false },
+  'HOU': { name: 'Daikin Park',       team: 'Astros',     hr: 105, note: 'Dome keeps HR neutral year-round', roof: true },
+  'BOS': { name: 'Fenway Park',       team: 'Red Sox',    hr: 103, note: 'Green Monster gifts doubles but suppresses HRs', roof: false },
+  'MIL': { name: 'American Family',  team: 'Brewers',     hr: 100, note: 'Neutral park · Retractable roof', roof: true },
+  'DET': { name: 'Comerica Park',     team: 'Tigers',     hr: 99,  note: 'Cold spring suppresses. Warmer months improving.', roof: false },
+  'CHC': { name: 'Wrigley Field',     team: 'Cubs',       hr: 97,  note: 'Wind-dependent · Can swing ±20 pts on game day', roof: false },
+  'WSH': { name: "Nationals Park",    team: 'Nationals',  hr: 96,  note: 'Slightly suppressive · Large outfield', roof: false },
+  'NYM': { name: 'Citi Field',        team: 'Mets',       hr: 95,  note: 'Suppressive especially to LHB', roof: false },
+  'STL': { name: 'Busch Stadium',     team: 'Cardinals',  hr: 93,  note: 'Neutral to slight pitcher-friendly', roof: false },
+  'CLE': { name: 'Progressive Field', team: 'Guardians',  hr: 90,  note: 'Cold April/May temperatures hurt', roof: false },
+  'SEA': { name: 'T-Mobile Park',     team: 'Mariners',   hr: 89,  note: 'Marine air + deep CF = HR suppressor', roof: true },
+  'ARI': { name: 'Chase Field',       team: 'D-backs',    hr: 88,  note: 'Dome neutralizes heat advantage', roof: true },
+  'OAK': { name: 'Oakland',           team: 'Athletics',  hr: 87,  note: 'Cold bay area conditions', roof: false },
+  'KC':  { name: 'Kauffman Stadium',  team: 'Royals',     hr: 95,  note: '⚠️ 2026 renovations — fences moved in. Historical 83 is obsolete.', roof: false },
+  'MIA': { name: 'loanDepot Park',    team: 'Marlins',    hr: 86,  note: 'Dome but traditionally suppressive', roof: true },
+  'CWS': { name: 'Rate Field',        team: 'White Sox',  hr: 85,  note: 'Dimensions and air work against power', roof: false },
+  'TB':  { name: 'Steinbrenner Field',team: 'Rays',       hr: 84,  note: 'Outdoor 2025+ · Adjustment period', roof: false },
+  'LAA': { name: 'Angel Stadium',     team: 'Angels',     hr: 83,  note: 'Deep center suppresses HR totals', roof: false },
+  'SF':  { name: 'Oracle Park',       team: 'Giants',     hr: 80,  note: 'Marine layer + deep CF · Brutal for LHB (-23%)', roof: false },
+  'PIT': { name: 'PNC Park',          team: 'Pirates',    hr: 78,  note: '2nd lowest HR total in MLB (2020-24)', roof: false },
+  'SD':  { name: 'Petco Park',        team: 'Padres',     hr: 74,  note: 'Lowest HR factor in NL · Cold April nights', roof: false },
+};
+
+// ─── State ─────────────────────────────────────────────
+let csvData = [null, null, null];
+let parsedBatters = [];
+let parsedPitchers = [];
+let hrResults = [];
+let activeFilter = 'all';
+let activeSort = 'score';
+let searchQuery = '';
+let weatherData = {}; // keyed by team abbreviation (home team)
+
+// ─── WEATHER GAME GRID ─────────────────────────────────
+// All 30 MLB team matchup slots — user fills in from Ballpark Pal
+const TEAM_MATCHUPS = [
+  { away:'LAD', home:'COL', park:'COL' }, { away:'CHW', home:'OAK', park:'OAK' },
+  { away:'DET', home:'BOS', park:'BOS' }, { away:'SD',  home:'LAA', park:'LAA' },
+  { away:'TOR', home:'ARI', park:'ARI' }, { away:'MIL', home:'MIA', park:'MIA' },
+  { away:'STL', home:'HOU', park:'HOU' }, { away:'KC',  home:'NYY', park:'NYY' },
+  { away:'TB',  home:'PIT', park:'PIT' }, { away:'TEX', home:'SEA', park:'SEA' },
+  { away:'ATL', home:'PHI', park:'PHI' }, { away:'CIN', home:'MIN', park:'MIN' },
+  { away:'NYM', home:'CHC', park:'CHC' }, { away:'SF',  home:'WSH', park:'WSH' },
+  { away:'BAL', home:'CLE', park:'CLE' },
+];
+
+function buildWeatherGrid() {
+  const grid = document.getElementById('weather-game-grid');
+  if (!grid) return;
+
+  // Saved weather from localStorage
+  const saved = JSON.parse(localStorage.getItem('dingerlab_weather') || '{}');
+  weatherData = saved;
+
+  grid.innerHTML = TEAM_MATCHUPS.map(g => {
+    const park = PARK_FACTORS[g.park] || {};
+    const isDome = park.roof === true;
+    const saved = weatherData[g.park] || {};
+
+    if (isDome) {
+      return `
+      <div class="wgame-card dome-park" id="wcard-${g.park}">
+        <div class="wgame-matchup">${g.away} @ ${g.home}</div>
+        <div class="wgame-park">🏠 ${park.name || g.park} — DOME</div>
+        <div class="wgame-dome-note">Roof controlled · Weather not applicable · HR adj: 0%</div>
+      </div>`;
+    }
+
+    return `
+    <div class="wgame-card ${Object.keys(saved).length ? 'has-data' : ''}" id="wcard-${g.park}">
+      <div class="wgame-matchup">${g.away} @ ${g.home}</div>
+      <div class="wgame-park">☀️ ${park.name || g.park}</div>
+      <div class="wgame-fields">
+        <div class="wfield">
+          <label>TEMP (°F)</label>
+          <input type="number" id="w-temp-${g.park}" placeholder="e.g. 68" min="20" max="110"
+            value="${saved.temp || ''}" oninput="recalcAdj('${g.park}')">
+        </div>
+        <div class="wfield">
+          <label>WIND SPEED (mph)</label>
+          <input type="number" id="w-wspd-${g.park}" placeholder="e.g. 12" min="0" max="50"
+            value="${saved.windSpd || ''}" oninput="recalcAdj('${g.park}')">
+        </div>
+        <div class="wfield">
+          <label>WIND DIRECTION</label>
+          <select id="w-wdir-${g.park}" onchange="recalcAdj('${g.park}')">
+            <option value="">— select —</option>
+            <option value="out-rf"  ${saved.windDir==='out-rf'  ?'selected':''}>↗ Out to RF</option>
+            <option value="out-lf"  ${saved.windDir==='out-lf'  ?'selected':''}>↖ Out to LF</option>
+            <option value="out-cf"  ${saved.windDir==='out-cf'  ?'selected':''}>↑ Out to CF</option>
+            <option value="in"      ${saved.windDir==='in'      ?'selected':''}>↓ Blowing In</option>
+            <option value="ltr"     ${saved.windDir==='ltr'     ?'selected':''}>→ Left to Right</option>
+            <option value="rtl"     ${saved.windDir==='rtl'     ?'selected':''}>← Right to Left</option>
+            <option value="calm"    ${saved.windDir==='calm'    ?'selected':''}>~ Calm / Variable</option>
+          </select>
+        </div>
+        <div class="wfield">
+          <label>CONDITIONS</label>
+          <select id="w-cond-${g.park}" onchange="recalcAdj('${g.park}')">
+            <option value="">— optional —</option>
+            <option value="humid-hi"  ${saved.cond==='humid-hi'  ?'selected':''}>H (green) High humidity</option>
+            <option value="humid-lo"  ${saved.cond==='humid-lo'  ?'selected':''}>H (red) Low humidity</option>
+            <option value="pres-lo"   ${saved.cond==='pres-lo'   ?'selected':''}>P (green) Low pressure</option>
+            <option value="pres-hi"   ${saved.cond==='pres-hi'   ?'selected':''}>P (red) High pressure</option>
+            <option value="rain-risk" ${saved.cond==='rain-risk' ?'selected':''}>🌧 Rain risk / delay</option>
+            <option value="normal"    ${saved.cond==='normal'    ?'selected':''}>Normal</option>
+          </select>
+        </div>
+      </div>
+      <div class="wgame-hr-adj neutral" id="wadj-${g.park}">
+        ${saved.adj != null ? formatAdj(saved.adj) : 'Enter conditions above'}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Recalc all saved adjustments on load
+  TEAM_MATCHUPS.forEach(g => {
+    if (weatherData[g.park] && !PARK_FACTORS[g.park]?.roof) recalcAdj(g.park, false);
+  });
+}
+
+function formatAdj(adj) {
+  if (adj > 0)  return `Weather boost: +${adj.toFixed(0)}% HR`;
+  if (adj < 0)  return `Weather suppress: ${adj.toFixed(0)}% HR`;
+  return 'Weather: Neutral (0%)';
+}
+
+function recalcAdj(parkCode, save = true) {
+  const temp   = parseFloat(document.getElementById(`w-temp-${parkCode}`)?.value);
+  const wspd   = parseFloat(document.getElementById(`w-wspd-${parkCode}`)?.value);
+  const wdir   = document.getElementById(`w-wdir-${parkCode}`)?.value;
+  const cond   = document.getElementById(`w-cond-${parkCode}`)?.value;
+
+  let adj = 0;
+
+  // Temperature effect
+  if (!isNaN(temp)) {
+    if      (temp >= 90) adj += 18;
+    else if (temp >= 83) adj += 10;
+    else if (temp >= 76) adj += 5;
+    else if (temp >= 56) adj += 0;
+    else if (temp >= 46) adj -= 12;
+    else                 adj -= 20;
+  }
+
+  // Wind direction × speed
+  if (wdir && !isNaN(wspd) && wspd > 0) {
+    const spd = wspd;
+    if      (wdir === 'out-rf' || wdir === 'out-lf') adj += spd >= 15 ? 18 : spd >= 10 ? 12 : 6;
+    else if (wdir === 'out-cf')                      adj += spd >= 15 ? 10 : spd >= 10 ? 6  : 3;
+    else if (wdir === 'in')                          adj -= spd >= 15 ? 20 : spd >= 10 ? 13 : 7;
+    else if (wdir === 'calm')                        adj += 0;
+    // crosswind = neutral
+  }
+
+  // Humidity / pressure flags
+  if (cond === 'humid-hi') adj += 4;
+  if (cond === 'humid-lo') adj -= 4;
+  if (cond === 'pres-lo')  adj += 4;
+  if (cond === 'pres-hi')  adj -= 6;
+
+  const adjEl = document.getElementById(`wadj-${parkCode}`);
+  if (adjEl) {
+    adjEl.textContent = formatAdj(adj);
+    adjEl.className = `wgame-hr-adj ${adj > 3 ? 'boost' : adj < -3 ? 'suppress' : 'neutral'}`;
+  }
+
+  // Mark card
+  const card = document.getElementById(`wcard-${parkCode}`);
+  if (card && (!isNaN(temp) || wdir)) card.classList.add('has-data');
+
+  if (save) {
+    weatherData[parkCode] = { temp: isNaN(temp)?null:temp, windSpd: isNaN(wspd)?null:wspd, windDir: wdir||null, cond: cond||null, adj };
+    localStorage.setItem('dingerlab_weather', JSON.stringify(weatherData));
+  }
+}
+
+function clearWeather() {
+  weatherData = {};
+  localStorage.removeItem('dingerlab_weather');
+  buildWeatherGrid();
+  toast('Weather data cleared');
+}
+
+function saveWeatherAndRun() {
+  // Save all current inputs
+  TEAM_MATCHUPS.forEach(g => {
+    if (!PARK_FACTORS[g.park]?.roof) recalcAdj(g.park, true);
+  });
+  toast('Weather saved ✓');
+  if (hrResults.length) {
+    hrResults = hrResults.map(p => applyWeatherToScore(p));
+    hrResults.sort((a, b) => b.total - a.total);
+    renderBoard();
+    toast('Weather saved · Board updated ✓');
+  }
+}
+
+// ─── WEATHER ADJUSTMENT TO SCORE ───────────────────────
+function getWeatherAdj(batter) {
+  // Find this batter's home team from park — match via opponent or team
+  const homeTeam = batter.opponent || batter.team || '';
+  // Try to match team abbreviation to a park
+  const parkCode = Object.keys(PARK_FACTORS).find(k =>
+    PARK_FACTORS[k].team.toLowerCase().includes(homeTeam.toLowerCase()) ||
+    homeTeam.toUpperCase() === k
+  );
+  if (!parkCode) return { adj: 0, label: null };
+  if (PARK_FACTORS[parkCode]?.roof) return { adj: 0, label: '🏠 Dome' };
+  const w = weatherData[parkCode];
+  if (!w || w.adj == null) return { adj: 0, label: null };
+  return { adj: w.adj, label: formatAdj(w.adj), parkCode };
+}
+
+function applyWeatherToScore(p) {
+  const { adj } = getWeatherAdj(p);
+  if (!adj) return p;
+  // Convert weather HR% adj to score points: ±1% HR adj ≈ ±0.5 score points, capped ±15
+  const weatherBonus = Math.max(-15, Math.min(15, adj * 0.5));
+  const newTotal = Math.round(Math.max(1, Math.min(99, p.total + weatherBonus)));
+  const tier = newTotal >= 75 ? 'ELITE' : newTotal >= 60 ? 'PRIME' : newTotal >= 40 ? 'SOLID' : 'WATCH';
+  return { ...p, total: newTotal, tier, weatherAdj: adj };
+}
+
+
+// ─── Tab navigation ────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+}
+
+document.querySelectorAll('nav button[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// ─── File handling ─────────────────────────────────────
+function handleFile(e, idx) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    csvData[idx] = ev.target.result;
+    const zone = document.getElementById('zone-' + idx);
+    const status = document.getElementById('status-' + idx);
+    zone.classList.add('loaded');
+    status.className = 'upload-status status-loaded';
+    status.textContent = `✓ ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+    checkRunReady();
+    toast(`CSV ${idx + 1} loaded: ${file.name}`);
+  };
+  reader.readAsText(file);
+}
+
+function checkRunReady() {
+  const loaded = csvData.filter(Boolean).length;
+  const btn = document.getElementById('run-btn');
+  btn.disabled = loaded < 3;
+  if (loaded < 3) btn.textContent = `⏳ LOAD ${3-loaded} MORE CSV${3-loaded>1?'S':''} TO CONTINUE`;
+  else btn.textContent = '🔬 RUN HR PREDICTION MODEL';
+}
+
+// ─── CSV Parser ────────────────────────────────────────
+// Handles both normal CSVs and pitcher CSVs with a 2-row header
+function parseCSV(text, skipFirstRow = false) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headerLine = skipFirstRow ? lines[1] : lines[0];
+  const headers = headerLine.split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+  const dataLines = skipFirstRow ? lines.slice(2) : lines.slice(1);
+  return dataLines.map(line => {
+    const values = parseCSVLine(line);
+    const row = {};
+    headers.forEach((h, i) => { row[h] = values[i] ? values[i].trim().replace(/^"|"$/g, '') : ''; });
+    return row;
+  }).filter(r => Object.values(r).some(v => v));
+}
+
+// Auto-detect if pitcher CSV has 2-row header (first cell of row 1 is blank or "SPLIT")
+function parsePitcherCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const firstRow = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
+  // 2-row header if first row has empty first cell or contains "split"/"metrics"
+  const hasTwoRowHeader = firstRow[0] === '' || firstRow.some(h => h.includes('split') || h.includes('metrics'));
+  return parseCSV(text, hasTwoRowHeader);
+}
+
+function parseCSVLine(line) {
+  const result = []; let current = ''; let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') { inQuotes = !inQuotes; }
+    else if (ch === ',' && !inQuotes) { result.push(current); current = ''; }
+    else current += ch;
+  }
+  result.push(current);
+  return result;
+}
+
+// Direct column lookup (exact key match first, then substring)
+function findCol(row, ...candidates) {
+  const keys = Object.keys(row);
+  for (const cand of candidates) {
+    const lc = cand.toLowerCase();
+    // Exact match first
+    const exact = keys.find(k => k.toLowerCase() === lc);
+    if (exact && row[exact] !== '') return row[exact];
+    // Substring match
+    const sub = keys.find(k => k.toLowerCase().includes(lc));
+    if (sub && row[sub] !== '') return row[sub];
+  }
+  return null;
+}
+
+function numOrNull(v) {
+  if (v === null || v === undefined || v === '') return null;
+  const n = parseFloat(String(v).replace(/[^0-9.\-]/g, ''));
+  return isNaN(n) ? null : n;
+}
+
+// ─── SMART PITCHER NAME MATCHER ────────────────────────
+// Pitcher CSV uses "C. Ragans", batter CSV uses "Cole Ragans"
+// Expand abbreviated name to match full name
+function buildPitcherIndex(pitchers) {
+  // Returns a lookup function: given a full name, find the matching pitcher
+  return (fullName) => {
+    if (!fullName) return null;
+    const fl = fullName.toLowerCase().trim();
+
+    // 1. Exact match
+    let match = pitchers.find(p => p.name.toLowerCase() === fl);
+    if (match) return match;
+
+    // 2. Abbreviated match: "C. Ragans" vs "Cole Ragans"
+    // Split full name into first/last
+    const parts = fl.split(' ').filter(Boolean);
+    if (parts.length >= 2) {
+      const firstName = parts[0];
+      const lastName = parts.slice(1).join(' ');
+      const firstInitial = firstName[0];
+
+      match = pitchers.find(p => {
+        const pl = p.name.toLowerCase().trim();
+        const pp = pl.split(' ').filter(Boolean);
+        if (pp.length < 2) return false;
+        const pFirst = pp[0].replace('.', '');
+        const pLast = pp.slice(1).join(' ');
+        // "c. ragans" → first is "c", last is "ragans"
+        return pLast === lastName && (pFirst === firstInitial || pFirst.startsWith(firstInitial));
+      });
+      if (match) return match;
+
+      // 3. Last name only match (fallback)
+      match = pitchers.find(p => {
+        const pl = p.name.toLowerCase().trim();
+        const pp = pl.split(' ').filter(Boolean);
+        const pLast = pp.slice(1).join(' ');
+        return pLast === lastName;
+      });
+      if (match) return match;
+    }
+    return null;
+  };
+}
+
+// ─── BATTER ROW PARSER ─────────────────────────────────
+// Exact columns from PropFinder batter CSV:
+// Date, Batter, Pitcher, Bat, Pitch Hand, Result, Pitch Type,
+// EV, Bat Speed, Pitch Velo, Angle, Dist, Trajectory, Barrel, HR Parks, Ballpark, Season
+function parseBatterRow(row) {
+  const rawDate = row['date'] || '';
+  let dateVal = null;
+  if (rawDate) {
+    const d = new Date(rawDate);
+    dateVal = isNaN(d.getTime()) ? rawDate : d;
+  }
+
+  const evRaw       = numOrNull(row['ev']);
+  const laRaw       = numOrNull(row['angle']);
+  const distRaw     = numOrNull(row['dist']);
+  const batSpeedRaw = numOrNull(row['bat speed']);
+
+  // Barrel: Y/N
+  const barrelStr = (row['barrel'] || '').toLowerCase();
+  const isBarrel  = barrelStr === 'y' ? 1 : barrelStr === 'n' ? 0 : null;
+
+  // Hard hit: derive from EV ≥ 95 mph (no dedicated column in this CSV)
+  const isHardHit = evRaw != null ? (evRaw >= 95 ? 1 : 0) : null;
+
+  // Trajectory for fly ball detection
+  const traj = (row['trajectory'] || '').toLowerCase();
+  const isFlyBall = (traj === 'fly_ball' || traj === 'popup') ? 1 : 0;
+
+  // Sweet spot: launch angle 8–32°
+  const isSweetSpot = laRaw != null ? (laRaw >= 8 && laRaw <= 32 ? 1 : 0) : null;
+
+  // Result for HR detection
+  const result = (row['result'] || '').toLowerCase();
+  const isHR = result.includes('home_run') || result.includes('homer') || result === 'hr' ? 1 : 0;
+
+  // Pull air: fly ball where we assume pull — approximate from trajectory
+  // (no spray column in this CSV, so use fly_ball as proxy)
+  const isPullAir = isFlyBall;
+
+  // Ballpark → team abbreviation for weather lookup
+  const ballpark = row['ballpark'] || '';
+
+  return {
+    name:        (row['batter'] || 'Unknown').trim(),
+    hand:        (row['bat'] || '?').toUpperCase().charAt(0),
+    pitcher:     (row['pitcher'] || '').trim(),
+    pitcherHand: (row['pitch hand'] || '?').toUpperCase().charAt(0),
+    team:        '',
+    opponent:    ballpark,
+    ballpark,
+    ev:          evRaw,
+    launchAngle: laRaw,
+    distance:    distRaw,
+    batSpeed:    batSpeedRaw,
+    isBarrel,
+    isHardHit,
+    isSweetSpot,
+    isPullAir,
+    isHR,
+    isFlyBall,
+    dateVal,
+    rawDate,
+    // no pre-aggregated columns in this CSV
+    _aggBarrelPct: null, _aggPullAir: null, _aggHrFB: null,
+    _aggSweetSpot: null, _aggHardHit: null, _aggMaxEv: null,
+    _aggIso: null, _aggFbPct: null,
+  };
+}
+
+// ─── PITCHER ROW PARSER ────────────────────────────────
+// Exact columns from PropFinder pitcher CSV (after skipping 2-row header):
+// TIME, PITCHER, VS, IP, BF, ERA, AVG, WOBA, WHIP, ISO, SLG,
+// HR, HR/9, TB, K%, BB, BATTED BALLS, HARD HIT%, BARRELS, BARREL%
+function parsePitcherRow(row, side) {
+  return {
+    name:      (row['pitcher'] || 'Unknown').trim(),
+    side,
+    ip:        numOrNull(row['ip']),
+    hr:        numOrNull(row['hr']),
+    hrPer9:    numOrNull(row['hr/9']),
+    hardHit:   numOrNull(row['hard hit%']),
+    barrelPct: numOrNull(row['barrel%']),
+    barrels:   numOrNull(row['barrels']),
+    bf:        numOrNull(row['bf']),
+    bbType:    row['batted balls'] || '',
+    team:      '',
+  };
+}
+
+// ─── AGGREGATE LAST-15 BATTED BALLS PER PLAYER ─────────
+// Detects whether CSV is event-level or pre-aggregated, handles both.
+function aggregateBatters(rawRows) {
+  const LAST_N = 15;
+
+  // PropFinder batter CSV is always event-level (one row per batted ball with Date column)
+  // Group by player, sort by date, take last 15, aggregate
+
+  const playerGroups = {};
+  rawRows.forEach(r => {
+    if (!r.name || r.name === 'Unknown') return;
+    const key = r.name.toLowerCase().trim();
+    if (!playerGroups[key]) playerGroups[key] = [];
+    playerGroups[key].push(r);
+  });
+
+  return Object.values(playerGroups).map(events => {
+    // Sort: if dateVal is a Date object use it, else sort by rawDate string, else keep order
+    events.sort((a, b) => {
+      if (a.dateVal instanceof Date && b.dateVal instanceof Date) return a.dateVal - b.dateVal;
+      if (a.rawDate && b.rawDate) return a.rawDate.localeCompare(b.rawDate);
+      return 0; // preserve original order (assume CSV is already chronological)
+    });
+
+    // Take last LAST_N events
+    const last15 = events.slice(-LAST_N);
+    const n = last15.length;
+
+    // Helper: average a numeric key, ignoring nulls
+    const avg = key => {
+      const vals = last15.map(e => e[key]).filter(v => v != null);
+      return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+    };
+    // Helper: percentage of events where flag = 1
+    const pct = key => {
+      const vals = last15.map(e => e[key]).filter(v => v != null);
+      return vals.length ? (vals.reduce((a, b) => a + b, 0) / vals.length) * 100 : null;
+    };
+
+    const first = events[events.length - 1]; // most recent event for string fields
+
+    // barrel% = % of last-15 BIP that were barrels
+    const barrelPct = last15.some(e => e.isBarrel != null)
+      ? pct('isBarrel')
+      : avg('_aggBarrelPct');
+
+    const hardHit = last15.some(e => e.isHardHit != null)
+      ? pct('isHardHit')
+      : avg('_aggHardHit');
+
+    const sweetSpot = last15.some(e => e.isSweetSpot != null)
+      ? pct('isSweetSpot')
+      : avg('_aggSweetSpot');
+
+    const pullAir = last15.some(e => e.isPullAir != null)
+      ? pct('isPullAir')
+      : avg('_aggPullAir');
+
+    // HR/FB rate from last-15
+    const fbCount  = last15.filter(e => e.isFlyBall === 1).length;
+    const hrCount  = last15.filter(e => e.isHR === 1).length;
+    const hrFB     = fbCount > 0 ? (hrCount / fbCount) * 100
+                   : avg('_aggHrFB');
+
+    const recentLabel = n < LAST_N
+      ? `Last ${n} BIP`
+      : `Last ${LAST_N} BIP`;
+
+    // ── Determine batter hand from actual events ──────────
+    // Count L vs R across all last-15 events (switch hitters will have both)
+    const handCounts = {};
+    last15.forEach(e => {
+      const h = e.hand;
+      if (h && h !== '?') handCounts[h] = (handCounts[h] || 0) + 1;
+    });
+    const handEntries = Object.entries(handCounts).sort((a, b) => b[1] - a[1]);
+
+    let resolvedHand = first.hand; // fallback
+    if (handEntries.length === 1) {
+      // Only one hand seen — straightforward
+      resolvedHand = handEntries[0][0];
+    } else if (handEntries.length > 1) {
+      // Switch hitter: use whichever side they used MORE in their last 15 BIP.
+      // This reflects their recent usage (and their matchup today is captured
+      // via pitcherHand from the most recent event).
+      resolvedHand = handEntries[0][0]; // dominant side in last-15
+    }
+
+    // Pitcher hand: take from most recent event (today's matchup)
+    const recentPitcherHand = first.pitcherHand && first.pitcherHand !== '?'
+      ? first.pitcherHand
+      : (last15.slice().reverse().find(e => e.pitcherHand && e.pitcherHand !== '?')?.pitcherHand || '?');
+
+    return {
+      name:        first.name,
+      hand:        resolvedHand,
+      team:        first.team,
+      opponent:    first.opponent,
+      pitcher:     first.pitcher,
+      pitcherHand: recentPitcherHand,
+      ev:          avg('ev'),
+      maxEv:       avg('_aggMaxEv') ?? Math.max(...last15.map(e => e.ev || 0)),
+      launchAngle: avg('launchAngle'),
+      batSpeed:    avg('batSpeed'),
+      distance:    avg('distance'),
+      barrelPct,
+      hardHit,
+      sweetSpot,
+      pullAir,
+      hrFB,
+      iso:         avg('_aggIso'),
+      fbPct:       avg('_aggFbPct'),
+      recentLabel,
+      totalEvents: events.length,
+    };
+  });
+}
+
+// ─── FALLBACK: pre-aggregated dedup (season-average CSV) ─
+function dedupAggregated(batters) {
+  const map = {};
+  const numKeys = ['ev','maxEv','launchAngle','barrelPct','batSpeed','hardHit','pullAir','hrFB','sweetSpot','distance','iso','fbPct'];
+  batters.forEach(b => {
+    const key = b.name.toLowerCase().trim();
+    if (!map[key]) {
+      map[key] = { ...b, _counts: {}, recentLabel: 'Season avg' };
+      numKeys.forEach(k => { if (b[k] != null) map[key]._counts[k] = 1; });
+    } else {
+      const ex = map[key];
+      numKeys.forEach(k => {
+        if (b[k] != null) {
+          if (ex[k] == null) { ex[k] = b[k]; ex._counts[k] = 1; }
+          else { ex[k] += b[k]; ex._counts[k] = (ex._counts[k] || 1) + 1; }
+        }
+      });
+      ['hand','team','opponent','pitcher','pitcherHand'].forEach(k => {
+        if ((!ex[k] || ex[k] === '?') && b[k] && b[k] !== '?') ex[k] = b[k];
+      });
+    }
+  });
+  return Object.values(map).map(b => {
+    const cleaned = { ...b };
+    const numKeys2 = ['ev','maxEv','launchAngle','barrelPct','batSpeed','hardHit','pullAir','hrFB','sweetSpot','distance','iso','fbPct'];
+    numKeys2.forEach(k => { if (b._counts && b._counts[k] > 1) cleaned[k] = b[k] / b._counts[k]; });
+    delete cleaned._counts;
+    return cleaned;
+  });
+}
+
+// ─── Z-SCORE HELPERS ───────────────────────────────────
+function sliceStat(arr, key) {
+  return arr.map(b => b[key]).filter(v => v != null);
+}
+function mean(vals) { return vals.length ? vals.reduce((a,b)=>a+b,0)/vals.length : 0; }
+function stddev(vals) {
+  if (vals.length < 2) return 1;
+  const m = mean(vals);
+  return Math.sqrt(vals.reduce((a,v)=>a+(v-m)**2,0)/vals.length) || 1;
+}
+// z-score clamped to [-2.5, 2.5], mapped to 0-100. Null stays null.
+function zScore(val, m, sd) {
+  if (val == null || sd === 0) return null;
+  return Math.max(0, Math.min(100, ((val - m) / sd) * 20 + 50));
+}
+function avg2(a, b) {
+  if (a == null && b == null) return null;
+  if (a == null) return b;
+  if (b == null) return a;
+  return (a + b) / 2;
+}
+
+// ─── SCORING ENGINE (z-score relative to today's slate) ─
+function scoreBatter(batter, pitcherLHB, pitcherRHB, zParams) {
+  const pitcherSplit = batter.hand === 'L' ? pitcherRHB : pitcherLHB;
+  const phrPer9 = pitcherSplit ? pitcherSplit.hrPer9 : null;
+  const pBarrel  = pitcherSplit ? pitcherSplit.barrelPct : null;
+  const pHard    = pitcherSplit ? pitcherSplit.hardHit : null;
+
+  // Batter z-scores — null when stat is missing, no fake defaults
+  const zEV      = zScore(batter.ev,         zParams.evMean,      zParams.evSd);
+  const zBarrel  = zScore(batter.barrelPct,   zParams.barrelMean,  zParams.barrelSd);
+  const zBatSpd  = zScore(batter.batSpeed,    zParams.bsMean,      zParams.bsSd);
+  const zHardHit = zScore(batter.hardHit,     zParams.hhMean,      zParams.hhSd);
+  const zPullAir = zScore(batter.pullAir,     zParams.pullMean,    zParams.pullSd);
+  const zHrFB    = zScore(batter.hrFB,        zParams.hrfbMean,    zParams.hrfbSd);
+  const zSS      = zScore(batter.sweetSpot,   zParams.ssMean,      zParams.ssSd);
+  // Launch angle: score how close to the ideal 25-35° HR window
+  const laIdeal  = batter.launchAngle != null
+    ? Math.max(0, Math.min(100, 100 - Math.abs(batter.launchAngle - 30) * 4))
+    : null;
+
+  // Pitcher z-scores (higher = better for batter)
+  const zPHr9    = zScore(phrPer9, zParams.phrMean, zParams.phrSd);
+  const zPBarrel = zScore(pBarrel, zParams.pbrMean, zParams.pbrSd);
+  const zPHard   = zScore(pHard,   zParams.phhMean, zParams.phhSd);
+
+  // Platoon: hard advantage/disadvantage, not a soft default
+  const platoonBonus = (batter.hand !== '?' && batter.pitcherHand !== '?')
+    ? (batter.hand !== batter.pitcherHand ? 75 : 25)
+    : null; // null = unknown, excluded from weighting
+
+  // Weighted composite — skip factors with no data, re-weight proportionally
+  const factors = [
+    { val: zEV,         w: 0.20 },
+    { val: zBarrel,     w: 0.22 },
+    { val: zBatSpd,     w: 0.10 },
+    { val: zHardHit,    w: 0.06 },
+    { val: laIdeal,     w: 0.08 },
+    { val: zSS,         w: 0.04 },
+    { val: zPullAir,    w: 0.07 },
+    { val: zHrFB,       w: 0.04 },
+    { val: zPHr9,       w: 0.11 },
+    { val: zPBarrel,    w: 0.04 },
+    { val: zPHard,      w: 0.02 },
+    { val: platoonBonus,w: 0.02 },
+  ];
+
+  let totalWeight = 0, weightedSum = 0;
+  factors.forEach(f => {
+    if (f.val != null) { weightedSum += f.val * f.w; totalWeight += f.w; }
+  });
+  const rawScore = totalWeight > 0 ? weightedSum / totalWeight : 50;
+
+  const scores = {
+    power:     avg2(zEV, zBarrel),
+    elevation: avg2(laIdeal, zSS),
+    batSpeed:  zBatSpd,
+    pitcher:   avg2(zPHr9, zPBarrel),
+    platoon:   platoonBonus,
+    pullHrFB:  avg2(zPullAir, zHrFB),
+    hardHit:   zHardHit,
+  };
+
+  const total = Math.round(Math.max(1, Math.min(99, rawScore)));
+  const tier = total >= 75 ? 'ELITE' : total >= 60 ? 'PRIME' : total >= 40 ? 'SOLID' : 'WATCH';
+
+  return { ...batter, scores, total, tier, pitcherSplit, phrPer9, pBarrel };
+}
+
+// ─── RUN MODEL ─────────────────────────────────────────
+function runModel() {
+  toast('Parsing CSVs...');
+
+  const rawBatters = parseCSV(csvData[0]);
+  const rawLHB = parsePitcherCSV(csvData[1]);
+  const rawRHB = parsePitcherCSV(csvData[2]);
+
+  parsedBatters = aggregateBatters(rawBatters.map(parseBatterRow).filter(b => b.name !== 'Unknown'));
+
+  const pitchersLHB = rawLHB.map(r => parsePitcherRow(r, 'LHB')).filter(p => p.name !== 'Unknown');
+  const pitchersRHB = rawRHB.map(r => parsePitcherRow(r, 'RHB')).filter(p => p.name !== 'Unknown');
+
+  // Build smart name-matching indexes
+  const lookupLHB = buildPitcherIndex(pitchersLHB);
+  const lookupRHB = buildPitcherIndex(pitchersRHB);
+
+  // Also keep maps for z-score params
+  parsedPitchers = [
+    ...pitchersLHB.map(p => ({...p, side:'vs LHB'})),
+    ...pitchersRHB.map(p => ({...p, side:'vs RHB'})),
+  ];
+
+  // ── Compute z-score params across the FULL slate (no defaults) ──
+  const allPitchers = [...pitchersLHB, ...pitchersRHB];
+  const zParams = {
+    evMean:    mean(sliceStat(parsedBatters,'ev')),
+    evSd:      stddev(sliceStat(parsedBatters,'ev')),
+    barrelMean:mean(sliceStat(parsedBatters,'barrelPct')),
+    barrelSd:  stddev(sliceStat(parsedBatters,'barrelPct')),
+    bsMean:    mean(sliceStat(parsedBatters,'batSpeed')),
+    bsSd:      stddev(sliceStat(parsedBatters,'batSpeed')),
+    hhMean:    mean(sliceStat(parsedBatters,'hardHit')),
+    hhSd:      stddev(sliceStat(parsedBatters,'hardHit')),
+    pullMean:  mean(sliceStat(parsedBatters,'pullAir')),
+    pullSd:    stddev(sliceStat(parsedBatters,'pullAir')),
+    hrfbMean:  mean(sliceStat(parsedBatters,'hrFB')),
+    hrfbSd:    stddev(sliceStat(parsedBatters,'hrFB')),
+    ssMean:    mean(sliceStat(parsedBatters,'sweetSpot')),
+    ssSd:      stddev(sliceStat(parsedBatters,'sweetSpot')),
+    phrMean:   mean(allPitchers.map(p=>p.hrPer9).filter(v=>v!=null)),
+    phrSd:     stddev(allPitchers.map(p=>p.hrPer9).filter(v=>v!=null)),
+    pbrMean:   mean(allPitchers.map(p=>p.barrelPct).filter(v=>v!=null)),
+    pbrSd:     stddev(allPitchers.map(p=>p.barrelPct).filter(v=>v!=null)),
+    phhMean:   mean(allPitchers.map(p=>p.hardHit).filter(v=>v!=null)),
+    phhSd:     stddev(allPitchers.map(p=>p.hardHit).filter(v=>v!=null)),
+  };
+
+  hrResults = parsedBatters.map(batter => {
+    // Match pitcher by full name using smart index
+    // LHB pitcher data = what pitcher allows vs LHB (relevant when batter is LH)
+    // RHB pitcher data = what pitcher allows vs RHB (relevant when batter is RH)
+    const pitcherLHB = lookupLHB(batter.pitcher);
+    const pitcherRHB = lookupRHB(batter.pitcher);
+    return scoreBatter(batter, pitcherLHB, pitcherRHB, zParams);
+  });
+
+  hrResults.sort((a, b) => b.total - a.total);
+
+  // Apply weather adjustments if any are loaded
+  hrResults = hrResults.map(p => applyWeatherToScore(p));
+  hrResults.sort((a, b) => b.total - a.total);
+
+  renderBoard();
+  renderPitcherTab();
+  const matchedCount = hrResults.filter(p => p.pitcherSplit).length;
+  const weatherCount = Object.keys(weatherData).length;
+  document.getElementById('board-subtitle').textContent =
+    `${hrResults.length} batters · ${pitchersLHB.length} pitchers loaded · ${matchedCount} pitcher matchups found · ${weatherCount ? weatherCount + ' parks w/ weather' : 'no weather'}`;
+
+  toast(`✓ Model complete · ${hrResults.length} HR candidates ranked`);
+  switchTab('board');
+}
+
+
+// ─── RENDER BOARD ──────────────────────────────────────
+function renderBoard() {
+  let data = hrResults.slice();
+
+  if (activeFilter !== 'all') data = data.filter(p => p.tier === activeFilter);
+  if (searchQuery) data = data.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  if (activeSort === 'ev') data.sort((a,b) => (b.ev||0)-(a.ev||0));
+  else if (activeSort === 'barrel') data.sort((a,b) => (b.barrelPct||0)-(a.barrelPct||0));
+  else if (activeSort === 'pitcher') data.sort((a,b) => (b.phrPer9||0)-(a.phrPer9||0));
+  else if (activeSort === 'batspeed') data.sort((a,b) => (b.batSpeed||0)-(a.batSpeed||0));
+  else data.sort((a,b) => b.total - a.total);
+
+  const grid = document.getElementById('board-grid');
+
+  if (!data.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🔍</div><div class="empty-title">NO RESULTS</div><div class="empty-sub">Adjust filters or search</div></div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map((p, i) => {
+    const rank = hrResults.indexOf(p) + 1;
+    const scoreAngle = p.total * 3.6;
+    const platoonLabel = p.hand !== '?' && p.pitcherHand !== '?' ?
+      (p.hand !== p.pitcherHand ? '✅ Platoon Adv' : '⚠️ Same Hand') : '? Handedness';
+    const platoonClass = p.hand !== '?' && p.pitcherHand !== '?' ?
+      (p.hand !== p.pitcherHand ? 'platoon-adv' : 'platoon-dis') : 'platoon-neu';
+
+    const factors = [
+      { key: 'POWER',   val: p.scores.power,    color: '#00d4b8' },
+      { key: 'ELEV',    val: p.scores.elevation, color: '#f5a623' },
+      { key: 'BAT SPD', val: p.scores.batSpeed,  color: '#a78bfa' },
+      { key: 'PITCHER', val: p.scores.pitcher,   color: '#ff4466' },
+      { key: 'PLATOON', val: p.scores.platoon,   color: '#39d98a' },
+      { key: 'PULL/FB', val: p.scores.pullHrFB,  color: '#ffd700' },
+    ];
+
+    const evClass = (p.ev || 0) >= 112 ? 'elite' : (p.ev || 0) >= 105 ? 'hot' : '';
+    const barrelClass = (p.barrelPct || 0) >= 15 ? 'elite' : (p.barrelPct || 0) >= 10 ? 'hot' : '';
+    const pitcherClass = (p.phrPer9 || 0) >= 1.5 ? 'danger' : (p.phrPer9 || 0) >= 1.2 ? 'hot' : '';
+
+    return `
+    <div class="hr-card ${p.tier.toLowerCase()}" onclick="openModal(${hrResults.indexOf(p)})" style="animation-delay:${i*0.04}s">
+      <div class="card-header">
+        <div class="player-info">
+          <div class="player-rank">#${rank}</div>
+          <div class="player-name">${p.name}</div>
+          <div class="player-meta">${p.team || '—'} · ${p.hand === 'L' ? 'LHB' : p.hand === 'R' ? 'RHB' : p.hand === 'S' ? 'SWITCH' : '?'}</div>
+          <div class="platoon-chip ${platoonClass}">${platoonLabel}</div>
+          ${p.recentLabel ? `<div class="platoon-chip platoon-neu" style="margin-top:3px">📊 ${p.recentLabel}</div>` : ''}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px">
+          <div class="score-ring" style="background:conic-gradient(var(--teal) ${scoreAngle}deg, var(--border) ${scoreAngle}deg)">
+            <div class="score-ring-inner">
+              <span class="score-value">${p.total}</span>
+              <span class="score-label">/ 100</span>
+            </div>
+          </div>
+          <span class="tier-badge tier-${p.tier}">${p.tier}</span>
+        </div>
+      </div>
+
+      <div class="factor-bars">
+        ${factors.map(f => `
+          <div class="factor-row">
+            <span class="factor-key">${f.key}</span>
+            <div class="factor-bar-bg">
+              <div class="factor-bar-fill" style="width:${f.val != null ? f.val.toFixed(0) : 0}%;background:${f.val != null ? f.color : 'var(--border)'}"></div>
+            </div>
+            <span class="factor-val" style="color:${f.val != null ? f.color : 'var(--muted)'}">​${f.val != null ? Math.round(f.val) : '—'}</span>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat-item">
+          <span class="stat-val ${evClass}">${p.ev ? p.ev.toFixed(1) : '—'}</span>
+          <span class="stat-key">AVG EV</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val ${barrelClass}">${p.barrelPct != null ? p.barrelPct.toFixed(1)+'%' : '—'}</span>
+          <span class="stat-key">BARREL%</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val">${p.batSpeed ? p.batSpeed.toFixed(1) : '—'}</span>
+          <span class="stat-key">BAT SPD</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-val ${pitcherClass}">${p.phrPer9 != null ? p.phrPer9.toFixed(2) : '—'}</span>
+          <span class="stat-key">P HR/9</span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <div class="matchup-info">
+          vs <strong>${p.pitcher || 'TBD'}</strong> (${p.pitcherHand === 'L' ? 'LHP' : p.pitcherHand === 'R' ? 'RHP' : '?'})<br>
+          ${p.opponent ? '@ ' + p.opponent : ''}
+          ${p.weatherAdj != null ? `<div class="weather-chip ${p.weatherAdj > 3 ? 'boost' : p.weatherAdj < -3 ? 'suppress' : 'neutral'}">${p.weatherAdj > 0 ? '🌡️ +' : '❄️ '}${p.weatherAdj.toFixed(0)}% weather</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── FILTER / SORT / SEARCH ────────────────────────────
+function filterBoard(val, btn) {
+  activeFilter = val;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderBoard();
+}
+
+function sortBoard(val) {
+  activeSort = val;
+  renderBoard();
+}
+
+function searchBoard(val) {
+  searchQuery = val;
+  renderBoard();
+}
+
+// ─── MODAL ─────────────────────────────────────────────
+function openModal(idx) {
+  const p = hrResults[idx];
+  if (!p) return;
+
+  const factorDetails = [
+    { icon:'⚡', label:'Exit Velocity', score: p.scores.power, detail: `Avg EV: ${p.ev ? p.ev.toFixed(1) + ' mph' : '—'} · Max EV: ${p.maxEv ? p.maxEv.toFixed(1) + ' mph' : '—'}` },
+    { icon:'🛢️', label:'Barrel%', score: p.scores.power, detail: `Barrel%: ${p.barrelPct != null ? p.barrelPct.toFixed(1)+'%' : '—'} · Hard Hit%: ${p.hardHit ? p.hardHit.toFixed(1)+'%' : '—'}` },
+    { icon:'📐', label:'Launch Angle + Sweet Spot', score: p.scores.elevation, detail: `Avg LA: ${p.launchAngle ? p.launchAngle.toFixed(1)+'°' : '—'} · Sweet Spot%: ${p.sweetSpot ? p.sweetSpot.toFixed(1)+'%' : '—'}` },
+    { icon:'🏏', label:'Bat Speed', score: p.scores.batSpeed, detail: `Bat Speed: ${p.batSpeed ? p.batSpeed.toFixed(1)+' mph' : '—'}` },
+    { icon:'🎯', label:'Pitcher Vulnerability', score: p.scores.pitcher, detail: `HR/9: ${p.phrPer9 ? p.phrPer9.toFixed(2) : '—'} · Barrel% allowed: ${p.pBarrel ? p.pBarrel.toFixed(1)+'%' : '—'}` },
+    { icon:'↔️', label:'Platoon Advantage', score: p.scores.platoon, detail: `Batter: ${p.hand || '?'}HB vs Pitcher: ${p.pitcherHand || '?'}HP` },
+    { icon:'↗️', label:'Pull Air% + HR/FB', score: p.scores.pullHrFB, detail: `Pull Air%: ${p.pullAir ? p.pullAir.toFixed(1)+'%' : '—'} · HR/FB: ${p.hrFB ? p.hrFB.toFixed(1)+'%' : '—'}` },
+  ];
+
+  const analysis = generateAnalysis(p);
+
+  document.getElementById('modal-content').innerHTML = `
+    <div class="modal-player-name">${p.name}</div>
+    <div class="modal-player-meta">
+      ${p.team || '—'} · ${p.hand === 'L' ? 'Left-Handed Batter' : p.hand === 'R' ? 'Right-Handed Batter' : 'Switch Hitter'} · 
+      Composite Score: <strong style="color:var(--teal)">${p.total}/100</strong> · 
+      <span class="tier-badge tier-${p.tier}" style="font-size:11px">${p.tier}</span>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">KEY STATCAST METRICS</div>
+      <div class="modal-stats-grid">
+        <div class="modal-stat">
+          <span class="modal-stat-val" style="${(p.ev||0)>=112?'color:var(--teal)':''}">${p.ev ? p.ev.toFixed(1) : '—'}</span>
+          <span class="modal-stat-key">Avg Exit Velo</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val" style="${(p.barrelPct||0)>=15?'color:var(--teal)':''}">${p.barrelPct != null ? p.barrelPct.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">Barrel%</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.batSpeed ? p.batSpeed.toFixed(1) : '—'}</span>
+          <span class="modal-stat-key">Bat Speed</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.launchAngle ? p.launchAngle.toFixed(1)+'°' : '—'}</span>
+          <span class="modal-stat-key">Launch Angle</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.hardHit ? p.hardHit.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">Hard Hit%</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.pullAir ? p.pullAir.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">Pull Air%</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.hrFB ? p.hrFB.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">HR/FB%</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-val">${p.sweetSpot ? p.sweetSpot.toFixed(1)+'%' : '—'}</span>
+          <span class="modal-stat-key">Sweet Spot%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">FACTOR BREAKDOWN</div>
+      ${factorDetails.map(f => `
+        <div class="factor-detail-row">
+          <span class="factor-detail-icon">${f.icon}</span>
+          <div style="flex:1">
+            <div class="factor-detail-label">${f.label}</div>
+            <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px">${f.detail}</div>
+          </div>
+          <div class="factor-detail-bar-bg">
+            <div class="factor-detail-bar-fill" style="width:${Math.min(100, f.score * 5)}%"></div>
+          </div>
+          <span class="factor-detail-score">${f.score}</span>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="modal-section">
+      <div class="modal-section-title">MATCHUP ANALYSIS</div>
+      <div class="analysis-box">${analysis}</div>
+    </div>
+  `;
+
+  document.getElementById('modal').classList.add('open');
+}
+
+function generateAnalysis(p) {
+  const lines = [];
+  const tier = p.tier;
+  const evStr = p.ev ? `${p.ev.toFixed(1)} mph exit velocity` : 'unknown EV';
+  const barrelStr = p.barrelPct != null ? `${p.barrelPct.toFixed(1)}% barrel rate` : 'unknown barrel rate';
+
+  if (tier === 'ELITE') lines.push(`<strong>${p.name}</strong> profiles as a top dinger candidate today with a <strong>${evStr}</strong> and <strong>${barrelStr}</strong>.`);
+  else if (tier === 'PRIME') lines.push(`<strong>${p.name}</strong> is a strong HR candidate with solid underlying metrics — a <strong>${evStr}</strong> and <strong>${barrelStr}</strong>.`);
+  else lines.push(`<strong>${p.name}</strong> shows some HR potential today with <strong>${evStr}</strong> and <strong>${barrelStr}</strong>.`);
+
+  if (p.launchAngle) {
+    const laOpt = p.launchAngle >= 25 && p.launchAngle <= 35;
+    lines.push(` Launch angle of <strong>${p.launchAngle.toFixed(1)}°</strong> is ${laOpt ? 'optimal for home runs (25–35° zone)' : p.launchAngle < 25 ? 'slightly below optimal — watch for line-drive power instead' : 'above the ideal HR window'}.`);
+  }
+
+  if (p.pullAir) {
+    lines.push(` Pull Air% of <strong>${p.pullAir.toFixed(1)}%</strong> ${p.pullAir >= 20 ? '— strong pull-side power generation' : '— moderate pull tendency'}.`);
+  }
+
+  if (p.pitcher) {
+    const pAdv = p.phrPer9 && p.phrPer9 >= 1.2;
+    lines.push(` Facing <strong>${p.pitcher}</strong> (${p.pitcherHand === 'L' ? 'LHP' : p.pitcherHand === 'R' ? 'RHP' : '?'}), who gives up <strong>${p.phrPer9 ? p.phrPer9.toFixed(2) : '—'} HR/9</strong> vs ${p.hand === 'L' ? 'lefties' : 'righties'} — ${pAdv ? 'a favorable matchup' : 'not a strong matchup on paper'}.`);
+  }
+
+  if (p.hand && p.pitcherHand && p.hand !== p.pitcherHand) {
+    lines.push(` <strong>Platoon advantage confirmed</strong> — ${p.hand}HB vs ${p.pitcherHand}HP is the favorable split.`);
+  }
+
+  return lines.join('');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+}
+
+// ─── PITCHER TAB ───────────────────────────────────────
+function renderPitcherTab() {
+  if (!parsedPitchers.length) return;
+
+  // Show all pitchers — sort by HR/9 if available, then barrel%, then hard hit%
+  const pitchers = parsedPitchers.slice().sort((a, b) => {
+    const aVal = a.hrPer9 ?? a.barrelPct ?? a.hardHit ?? 0;
+    const bVal = b.hrPer9 ?? b.barrelPct ?? b.hardHit ?? 0;
+    return bVal - aVal;
+  });
+
+  // Debug: show what we got so column mismatch is obvious
+  const sampleKeys = parsedPitchers.length
+    ? Object.keys(parsedPitchers[0]).filter(k => parsedPitchers[0][k] != null).join(', ')
+    : '';
+
+  if (pitchers.every(p => p.hrPer9 == null && p.barrelPct == null && p.hardHit == null)) {
+    document.getElementById('pitcher-content').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">⚠️</div>
+        <div class="empty-title">COLUMNS NOT MATCHED</div>
+        <div class="empty-sub" style="max-width:480px;margin:0 auto;line-height:1.7">
+          ${parsedPitchers.length} pitchers loaded but no stats parsed.<br>
+          Detected fields: <span style="color:var(--amber)">${sampleKeys || 'none'}</span><br><br>
+          Expected column names like: <span style="color:var(--teal)">HR/9, Hard Hit%, Barrel%, FB%</span>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const rows = pitchers.map(p => {
+    const hrClass     = (p.hrPer9 || 0) >= 1.5 ? 'val-hot' : (p.hrPer9 || 0) >= 1.2 ? 'val-warm' : 'val-cool';
+    const hardClass   = (p.hardHit || 0) >= 45  ? 'val-hot' : (p.hardHit || 0) >= 38  ? 'val-warm' : 'val-cool';
+    const barrelClass = (p.barrelPct || 0) >= 12 ? 'val-hot' : (p.barrelPct || 0) >= 8  ? 'val-warm' : 'val-cool';
+    const targetLevel = p.hrPer9 != null
+      ? ((p.hrPer9 >= 1.5) ? 'HIGH' : (p.hrPer9 >= 1.0) ? 'MED' : 'LOW')
+      : (p.barrelPct != null ? ((p.barrelPct >= 12) ? 'HIGH' : (p.barrelPct >= 8) ? 'MED' : 'LOW') : '—');
+    const targetClass = targetLevel === 'HIGH' ? 'target-high' : targetLevel === 'MED' ? 'target-med' : 'target-low';
+
+    return `<tr>
+      <td><span class="pitcher-name">${p.name}</span><span class="pitcher-hand">${p.side}</span></td>
+      <td class="val-neutral">${p.ip != null ? p.ip.toFixed(1) : '—'}</td>
+      <td class="val-neutral">${p.hr != null ? p.hr : '—'}</td>
+      <td class="${hrClass}">${p.hrPer9 != null ? p.hrPer9.toFixed(2) : '—'}</td>
+      <td class="${hardClass}">${p.hardHit != null ? p.hardHit.toFixed(1)+'%' : '—'}</td>
+      <td class="${barrelClass}">${p.barrelPct != null ? p.barrelPct.toFixed(1)+'%' : '—'}</td>
+      <td class="val-neutral">${p.fbPct != null ? p.fbPct.toFixed(1)+'%' : '—'}</td>
+      <td><span class="target-badge ${targetClass}">${targetLevel}</span></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('pitcher-content').innerHTML = `
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px">
+      ${parsedPitchers.length} pitchers loaded · sorted by vulnerability
+    </div>
+    <table class="pitcher-table">
+      <thead>
+        <tr>
+          <th>PITCHER</th>
+          <th>IP</th>
+          <th>HR</th>
+          <th>HR/9 ▼</th>
+          <th>HARD HIT%</th>
+          <th>BARREL%</th>
+          <th>FB%</th>
+          <th>TARGET</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div style="margin-top:14px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">
+      🔴 HIGH = HR/9 ≥ 1.5 · 🟠 MED = 1.0–1.5 · 🟢 LOW = under 1.0
+    </div>`;
+}
+
+// ─── PARK TAB ──────────────────────────────────────────
+function renderParks() {
+  const sorted = Object.entries(PARK_FACTORS).sort((a,b) => b[1].hr - a[1].hr);
+  const grid = document.getElementById('park-grid');
+
+  grid.innerHTML = sorted.map(([code, park]) => {
+    const pct = Math.min(100, Math.max(0, ((park.hr - 60) / (140 - 60)) * 100));
+    const color = park.hr >= 120 ? '#ff4466' : park.hr >= 110 ? '#f5a623' : park.hr >= 100 ? '#ffd700' : park.hr >= 90 ? '#6b7280' : '#374151';
+    const label = park.hr >= 120 ? '🔥 STRONG HR PARK' : park.hr >= 110 ? '✅ HR FRIENDLY' : park.hr >= 100 ? '⚡ NEUTRAL' : park.hr >= 85 ? '❄️ SUPPRESSING' : '🚫 HR KILLER';
+
+    return `
+    <div class="park-card">
+      <div class="park-name">${park.name}</div>
+      <div class="park-team">${code} · ${park.team} ${park.roof ? '🏠' : '☀️'}</div>
+      <div class="park-factor-display">
+        <span class="park-factor-num" style="color:${color}">${park.hr}</span>
+        <span class="park-factor-label">HR FACTOR</span>
+      </div>
+      <div class="park-bar-bg">
+        <div class="park-bar-fill" style="width:${pct}%;background:${color}"></div>
+      </div>
+      <div class="park-trend">${label}</div>
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5">${park.note}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── TOAST ─────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+// ─── INIT ──────────────────────────────────────────────
+renderParks();
+buildWeatherGrid();
+</script>
+</body>
+</html>
